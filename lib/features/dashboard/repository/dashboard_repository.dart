@@ -9,8 +9,8 @@ class DashboardRepository {
 
   Future<DashboardModel> getDashboard(String userId) async {
     try {
-      final response = await remoteDataSource.getDashboard(userId);
-      return DashboardModel.fromJson(response);
+      final innerData = await remoteDataSource.getDashboard(userId);
+      return DashboardModel.fromJson(innerData);
     } on ApiException {
       rethrow;
     } catch (_) {

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rafiq/core/error/api_exception.dart';
 import 'package:rafiq/features/dashboard/presentation/cubit/dashboard_state.dart';
 import 'package:rafiq/features/dashboard/repository/dashboard_repository.dart';
 
@@ -12,8 +13,10 @@ class DashboardCubit extends Cubit<DashboardState> {
     try {
       final dashboard = await repository.getDashboard(userId);
       emit(DashboardLoaded(dashboard));
+    } on ApiException catch (e) {
+      emit(DashboardError(e.message));
     } catch (e) {
-      emit(DashboardError(e.toString()));
+      emit(const DashboardError('Failed to load dashboard data.'));
     }
   }
 

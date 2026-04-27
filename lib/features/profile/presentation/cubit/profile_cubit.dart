@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rafiq/core/error/api_exception.dart';
 import 'package:rafiq/features/profile/presentation/cubit/profile_state.dart';
 import 'package:rafiq/features/profile/repository/profile_repository.dart';
 
@@ -12,8 +13,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final profile = await repository.getProfile();
       emit(ProfileLoaded(profile));
+    } on ApiException catch (e) {
+      emit(ProfileError(e.message));
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      emit(const ProfileError('Failed to load profile data.'));
     }
   }
 

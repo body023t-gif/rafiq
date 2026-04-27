@@ -9,8 +9,8 @@ class ProfileRepository {
 
   Future<ProfileModel> getProfile() async {
     try {
-      final response = await remoteDataSource.getProfile();
-      return ProfileModel.fromJson(response);
+      final innerData = await remoteDataSource.getProfile();
+      return ProfileModel.fromJson(innerData);
     } on ApiException {
       rethrow;
     } catch (_) {

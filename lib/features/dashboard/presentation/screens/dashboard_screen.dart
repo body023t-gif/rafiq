@@ -47,7 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
-    )..loadDashboard(widget.userId);
+    )..loadDashboard(ApiService.staticUserId);
   }
 
   @override
@@ -75,7 +75,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Text(state.message, textAlign: TextAlign.center),
                     SizedBox(height: 12.h),
                     FilledButton(
-                      onPressed: () => context.read<DashboardCubit>().retry(widget.userId),
+                      onPressed: () =>
+                          context.read<DashboardCubit>().retry(ApiService.staticUserId),
                       child: const Text('إعادة المحاولة'),
                     ),
                   ],
