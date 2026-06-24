@@ -1,0 +1,15 @@
+import 'package:rafiq/core/network/api_service.dart';
+
+class TimetableRemoteDataSource {
+  final ApiService apiService;
+
+  const TimetableRemoteDataSource(this.apiService);
+
+  Future<Map<String, dynamic>> generateTimetable(Map<String, dynamic> body) {
+    return apiService.post('/v1/api/ai/timetable', body: body);
+  }
+
+  Future<Map<String, dynamic>> saveTimetable(Map<String, dynamic> body) {
+    return apiService.post('/v1/api/ai/timetable/save', body: body);
+  }
+}

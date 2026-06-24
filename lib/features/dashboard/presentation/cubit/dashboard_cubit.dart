@@ -16,8 +16,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     } on ApiException catch (e) {
       emit(DashboardError(e.message));
     } catch (e) {
-      emit(const DashboardError('Failed to load dashboard data.'));
-    }
+      emit(const DashboardError('Failed to load dashboard data.'));    }
   }
 
   Future<void> retry(String userId) async {

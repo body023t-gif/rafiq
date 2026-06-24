@@ -5,7 +5,6 @@ class ApiService {
   static const String staticToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkJlYXJlciJ9.eyJ1bmlxdWVfbmFtZSI6IkNvcmRpZV9TYXdheW42NDgiLCJuYW1laWQiOiI1YzdmNmEzOS03MzMxLTQyMmUtYmE4YS01NDE3ZWVkYzAxNzkiLCJlbWFpbCI6IkNvcmRpZV9TYXdheW42NDhAcmFmZWVrLmVkdSIsIm5iZiI6MTc3NzMxOTA1NCwiZXhwIjoxODA4ODU1MDU0LCJqdGkiOiJkODhkNGJiOC1lN2E4LTQ3NmUtYWYxMS01N2E2OWUzN2I1NzIiLCJVc2VyVHlwZXMiOiIxIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJpYXQiOjE3NzczMTkwNTQsImlzcyI6Imh0dHBzOi8vcmFmZWVrLWxpdmUucnVuYXNwLm5ldC8ifQ.2buC9yRUym8kUJv6BZ5oViDQALZo1rpNcFxHUFWwoQg';
   static const String staticUserId = '64F525F8-D2AC-4EF2-83FF-0518CDF896F6';
-
   final Dio _dio;
 
   ApiService({
@@ -38,26 +37,7 @@ class ApiService {
         path,
         queryParameters: queryParameters,
       );
-
-      final data = response.data;
-      if (data == null) {
-        throw const ApiException('Empty response received from server.');
-      }
-
-      final success = data['success'];
-      if (success is bool && !success) {
-        throw ApiException(
-          (data['message'] ?? 'Request failed. Please try again.').toString(),
-          statusCode: (data['statusCode'] as num?)?.toInt() ?? response.statusCode,
-        );
-      }
-
-      final innerData = data['data'];
-      if (innerData is Map<String, dynamic>) {
-        return innerData;
-      }
-
-      throw const ApiException('Malformed response: "data" object is missing.');
+      return _unwrapObject(response.data, response.statusCode);
     } on DioException catch (e) {
       throw _mapDioException(e);
     } on ApiException {
@@ -65,6 +45,162 @@ class ApiService {
     } catch (_) {
       throw const ApiException('Unexpected error while calling API.');
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getList(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        path,
+        queryParameters: queryParameters,
+      );
+      return _unwrapList(response.data, response.statusCode);
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Unexpected error while calling API.');
+    }
+  }
+
+  Future<Map<String, dynamic>> post(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        path,
+        data: body,
+        queryParameters: queryParameters,
+      );
+      return _unwrapObject(response.data, response.statusCode);
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Unexpected error while calling API.');
+    }
+  }
+
+  Future<Map<String, dynamic>> put(
+    String path, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.put<Map<String, dynamic>>(
+        path,
+        data: body,
+        queryParameters: queryParameters,
+      );
+      return _unwrapObject(response.data, response.statusCode);
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Unexpected error while calling API.');
+    }
+  }
+
+  Future<Map<String, dynamic>> delete(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.delete<Map<String, dynamic>>(
+        path,
+        queryParameters: queryParameters,
+      );
+      final data = response.data;
+      if (data == null) {
+        return const {};
+      }
+      return _unwrapObject(data, response.statusCode);
+    } on DioException catch (e) {
+      throw _mapDioException(e);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Unexpected error while calling API.');
+    }
+  }
+
+  Map<String, dynamic> _unwrapObject(
+    Map<String, dynamic>? data,
+    int? statusCode,
+  ) {
+    if (data == null) {
+      throw const ApiException('Empty response received from server.');
+    }
+
+    final success = data['success'];
+    if (success is bool && !success) {
+      throw ApiException(
+        (data['message'] ?? 'Request failed. Please try again.').toString(),
+        statusCode: (data['statusCode'] as num?)?.toInt() ?? statusCode,
+      );
+    }
+
+    final innerData = data['data'];
+    if (innerData is Map<String, dynamic>) {
+      return innerData;
+    }
+
+    if (innerData == null && success == true) {
+      return const {};
+    }
+
+    throw const ApiException('Malformed response: "data" object is missing.');
+  }
+
+  List<Map<String, dynamic>> _unwrapList(
+    Map<String, dynamic>? data,
+    int? statusCode,
+  ) {
+    if (data == null) {
+      throw const ApiException('Empty response received from server.');
+    }
+
+    final success = data['success'];
+    if (success is bool && !success) {
+      throw ApiException(
+        (data['message'] ?? 'Request failed. Please try again.').toString(),
+        statusCode: (data['statusCode'] as num?)?.toInt() ?? statusCode,
+      );
+    }
+
+    final innerData = data['data'];
+    if (innerData is List) {
+      return innerData
+          .whereType<Map>()
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+    }
+
+    if (innerData is Map<String, dynamic>) {
+      for (final key in ['items', 'courses', 'sessions', 'messages', 'results']) {
+        final value = innerData[key];
+        if (value is List) {
+          return value
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
+        }
+      }
+      return [innerData];
+    }
+
+    if (innerData == null && success == true) {
+      return const [];
+    }
+
+    throw const ApiException('Malformed response: "data" list is missing.');
   }
 
   ApiException _mapDioException(DioException e) {
@@ -93,7 +229,8 @@ class ApiService {
       return (data['detail'] ??
               data['title'] ??
               data['message'] ??
-              data['error'])?.toString();
+              data['error'])
+          ?.toString();
     }
     if (data is String && data.trim().isNotEmpty) {
       return data;

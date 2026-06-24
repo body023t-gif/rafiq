@@ -15,12 +15,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SizedBox(
           height: kToolbarHeight,
-          // إجبار الـ Row أن يبدأ من اليسار (LTR) حتى لو كان التطبيق عربياً
           child: Row(
             textDirection: TextDirection.ltr,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // 1. الزر (سيصبح الآن في أقصى اليسار يقيناً)
               SizedBox(
                 width: 40,
                 height: 40,
@@ -40,8 +38,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
               ),
-
-              // 2. النص (سيصبح في أقصى اليمين يقيناً)
               if (title != null)
                 Text(
                   title!,
@@ -57,6 +53,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

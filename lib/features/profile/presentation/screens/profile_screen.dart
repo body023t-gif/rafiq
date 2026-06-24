@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rafiq/core/logic/helper_method.dart';
-import 'package:rafiq/core/network/api_service.dart';
+import 'package:rafiq/core/network/api_client.dart';
 import 'package:rafiq/core/ui/filledbutton.dart';
 import 'package:rafiq/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:rafiq/features/profile/presentation/cubit/profile_cubit.dart';
@@ -31,20 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _cubit = ProfileCubit(
       ProfileRepository(
-        ProfileRemoteDataSource(
-          ApiService(
-            baseUrl: const String.fromEnvironment(
-              'API_BASE_URL',
-              defaultValue: 'https://rafeek-live.runasp.net',
-            ),
-            acceptLanguage: const String.fromEnvironment(
-              'ACCEPT_LANGUAGE',
-              defaultValue: '',
-            ).isEmpty
-                ? null
-                : const String.fromEnvironment('ACCEPT_LANGUAGE'),
-          ),
-        ),
+        ProfileRemoteDataSource(createApiService()),
       ),
     )..loadProfile();
   }

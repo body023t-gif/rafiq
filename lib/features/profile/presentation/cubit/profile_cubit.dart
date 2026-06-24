@@ -16,8 +16,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     } on ApiException catch (e) {
       emit(ProfileError(e.message));
     } catch (e) {
-      emit(const ProfileError('Failed to load profile data.'));
-    }
+      emit(const ProfileError('Failed to load profile data.'));    }
   }
 
   Future<void> retry() async {

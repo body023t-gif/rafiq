@@ -6,6 +6,6 @@ void goTo(Widget page, {bool canPop = true}) {
   Navigator.pushAndRemoveUntil(
     navigatorKey.currentContext!,
     MaterialPageRoute(builder: (context) => page),
-        (route) => canPop,
+    (route) => canPop,
   );
 }

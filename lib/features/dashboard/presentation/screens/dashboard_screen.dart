@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rafiq/core/network/api_service.dart';
+import 'package:rafiq/core/network/api_client.dart';
 import 'package:rafiq/features/dashboard/data/datasource/dashboard_remote_datasource.dart';
 import 'package:rafiq/features/dashboard/presentation/cubit/dashboard_cubit.dart';
 import 'package:rafiq/features/dashboard/presentation/cubit/dashboard_state.dart';
@@ -30,24 +30,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    final apiService = createApiService();
     _cubit = DashboardCubit(
       DashboardRepository(
-        DashboardRemoteDataSource(
-          ApiService(
-            baseUrl: const String.fromEnvironment(
-              'API_BASE_URL',
-              defaultValue: 'https://rafeek-live.runasp.net',
-            ),
-            acceptLanguage: const String.fromEnvironment(
-              'ACCEPT_LANGUAGE',
-              defaultValue: '',
-            ).isEmpty
-                ? null
-                : const String.fromEnvironment('ACCEPT_LANGUAGE'),
-          ),
-        ),
+        DashboardRemoteDataSource(apiService),
       ),
-    )..loadDashboard(ApiService.staticUserId);
+    )..loadDashboard(widget.userId);
   }
 
   @override
@@ -76,7 +64,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     SizedBox(height: 12.h),
                     FilledButton(
                       onPressed: () =>
-                          context.read<DashboardCubit>().retry(ApiService.staticUserId),
+                          context.read<DashboardCubit>().retry(widget.userId),
                       child: const Text('إعادة المحاولة'),
                     ),
                   ],

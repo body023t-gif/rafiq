@@ -103,11 +103,7 @@ class UserProfileScreen extends StatelessWidget {
                     advisorName: loadedProfile.academicAdvisorName,
                   ),
                 ),
-
-                //SizedBox(height: 24.h),
-                //GPASimulatorCard(),
                 SizedBox(height: 24.h),
-                //AcademicHistoryView(),
                 AcademicHistoryView(
                   semesters: _mapSemesters(loadedProfile),
                 )

@@ -77,7 +77,7 @@ class AcademicSummaryCards extends StatelessWidget {
                   child: Icon(
                     Icons.emoji_events,
                     size: 20,
-                    color: Colors.white,                  ),
+                    color: Colors.white,),
                 ),
                 Text(
                   cgpa.toStringAsFixed(2),
