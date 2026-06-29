@@ -33,7 +33,7 @@ class MicButton extends StatelessWidget {
         height: 36.w,
         margin: EdgeInsets.only(right: 6.w),
         decoration: BoxDecoration(
-          color: isListening ? Colors.red.withOpacity(0.1) : Colors.transparent,
+          color: isListening ? Colors.red.withValues(alpha:0.1) : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -402,7 +402,7 @@ class _ChatAIViewState extends State<ChatAIView> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(.05),
+            color: Colors.black.withValues(alpha:.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
