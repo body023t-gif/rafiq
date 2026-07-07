@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafiq/core/logic/helper_method.dart';
 import 'package:rafiq/core/ui/appbar.dart';
 import 'package:rafiq/core/ui/filledbutton.dart';
-import 'package:rafiq/features/chat%20ai/presentation/widgets/chat%20ai.dart';
+import 'package:rafiq/features/chat%20ai/presentation/widgets/chat_ai.dart';
 
 class WelcomeChatView extends StatelessWidget {
   const WelcomeChatView({super.key});

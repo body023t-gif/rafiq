@@ -9,8 +9,8 @@ class CourseRemoteDataSource {
     int page = 1,
     int pageSize = 20,
     String? search,
-  }) {
-    return apiService.getList(
+  }) async {
+    final response = await apiService.getList(
       '/v1/api/courses',
       queryParameters: {
         'page': page,
@@ -18,10 +18,44 @@ class CourseRemoteDataSource {
         if (search != null && search.trim().isNotEmpty) 'search': search.trim(),
       },
     );
+
+    // TEMPORARY DEBUG LOGGING FOR COURSE REGISTRATION AUDIT
+    print('\n====== GET COURSES RAW JSON START ======');
+    for (var course in response) {
+      print('Course JSON: $course');
+      final sections = course['sections'] ?? course['courseSections'] ?? [];
+      if (sections is List) {
+        for (var section in sections) {
+          print('  Section JSON: $section');
+        }
+      }
+    }
+    print('====== GET COURSES RAW JSON END ======\n');
+
+    return response;
   }
 
   Future<Map<String, dynamic>> getCourseById(String courseId) {
     return apiService.get('/v1/api/courses/$courseId');
+  }
+
+  Future<Map<String, dynamic>> enrollCourse(String courseId, String sectionId) {
+    return apiService.post(
+      '/v1/api/courses/enroll',
+      body: {
+        'courseId': courseId,
+        'lectureGroupId': sectionId, // Map sectionId to backend-expected lectureGroupId
+      },
+    );
+  }
+
+  Future<Map<String, dynamic>> dropCourse(String courseId) {
+    return apiService.post(
+      '/v1/api/courses/drop',
+      body: {
+        'courseId': courseId,
+      },
+    );
   }
 
   Future<Map<String, dynamic>> addCourse(Map<String, dynamic> body) {

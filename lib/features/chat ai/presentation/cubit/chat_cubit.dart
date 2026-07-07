@@ -12,6 +12,7 @@ class ChatCubit extends Cubit<ChatState> {
   List<ChatMessageModel> _messages = [];
   List<ChatSessionModel> _sessions = [];
   String? _activeSessionId;
+  bool _isSendingLocal = false;
 
   Future<void> initialize() async {
     emit(const ChatLoading());
@@ -76,9 +77,11 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> sendQuestion(String question) async {
     final trimmed = question.trim();
-    if (trimmed.isEmpty || state is ChatLoaded && (state as ChatLoaded).isSending) {
+    if (trimmed.isEmpty || _isSendingLocal || (state is ChatLoaded && (state as ChatLoaded).isSending)) {
       return;
     }
+
+    _isSendingLocal = true;
 
     final userMessage = ChatMessageModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -140,6 +143,8 @@ class ChatCubit extends Cubit<ChatState> {
           activeSessionId: _activeSessionId,
         ),
       );
+    } finally {
+      _isSendingLocal = false;
     }
   }
 

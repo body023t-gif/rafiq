@@ -51,7 +51,7 @@ class ChatSessionModel {
   factory ChatSessionModel.fromJson(Map<String, dynamic> json) {
     return ChatSessionModel(
       id: readString(json, ['id', 'sessionId']),
-      title: readString(json, ['title', 'name', 'subject'], 'محادثة'),
+      title: readString(json, ['title', 'name', 'subject', 'sessionTitle'], 'محادثة'),
       lastMessageAt: DateTime.tryParse(
         readString(json, ['lastMessageAt', 'updatedAt', 'createdAt']),
       ),
@@ -93,5 +93,13 @@ class AskQuestionResponseModel {
       sessionId: readString(json, ['sessionId', 'chatSessionId']),
       messageId: readString(json, ['messageId', 'id']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'answer': answer,
+      'sessionId': sessionId,
+      if (messageId != null) 'messageId': messageId,
+    };
   }
 }

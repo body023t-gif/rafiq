@@ -1,17 +1,19 @@
 class ProfileModel {
+  final String id;
   final String fullName;
   final String universityCode;
   final String departmentName;
   final String profilePictureUrl;
-  final double currentGpa;
-  final double cumulativeGpa;
+  final double? currentGpa;
+  final double? cumulativeGpa;
   final int level;
-  final int completedHours;
-  final int totalHours;
+  final int? completedHours;
+  final int? totalHours;
   final String academicAdvisorName;
   final List<AcademicHistoryModel> academicHistory;
 
   const ProfileModel({
+    required this.id,
     required this.fullName,
     required this.universityCode,
     required this.departmentName,
@@ -27,24 +29,27 @@ class ProfileModel {
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
+      id: (json['id'] ?? '').toString(),
       fullName: (json['fullName'] ?? '').toString(),
       universityCode: (json['universityCode'] ?? '').toString(),
       departmentName: (json['departmentName'] ?? '').toString(),
       profilePictureUrl: (json['profilePictureUrl'] ?? '').toString(),
-      currentGpa: (json['currentGPA'] as num?)?.toDouble() ?? 0,
-      cumulativeGpa: (json['cumulativeGPA'] as num?)?.toDouble() ?? 0,
+      currentGpa: (json['currentGPA'] as num?)?.toDouble(),
+      cumulativeGpa: (json['cumulativeGPA'] as num?)?.toDouble(),
       level: (json['level'] as num?)?.toInt() ?? 0,
-      completedHours: (json['completedHours'] as num?)?.toInt() ?? 0,
-      totalHours: (json['totalHours'] as num?)?.toInt() ?? 0,
+      completedHours: (json['completedHours'] as num?)?.toInt(),
+      totalHours: (json['totalHours'] as num?)?.toInt(),
       academicAdvisorName: (json['academicAdvisorName'] ?? '').toString(),
       academicHistory: (json['academicHistory'] as List<dynamic>? ?? [])
-          .map((e) => AcademicHistoryModel.fromJson(e as Map<String, dynamic>))
+          .whereType<Map>()
+          .map((e) => AcademicHistoryModel.fromJson(Map<String, dynamic>.from(e)))
           .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'fullName': fullName,
       'universityCode': universityCode,
       'departmentName': departmentName,
@@ -76,7 +81,8 @@ class AcademicHistoryModel {
       semesterName: (json['semesterName'] ?? '').toString(),
       semesterGpa: (json['semesterGPA'] as num?)?.toDouble() ?? 0,
       courses: (json['courses'] as List<dynamic>? ?? [])
-          .map((e) => CourseModel.fromJson(e as Map<String, dynamic>))
+          .whereType<Map>()
+          .map((e) => CourseModel.fromJson(Map<String, dynamic>.from(e)))
           .toList(),
     );
   }

@@ -94,6 +94,30 @@ class CourseCubit extends Cubit<CourseState> {
     );
   }
 
+  Future<void> enrollCourse(String courseId, String sectionId) async {
+    emit(CourseActionLoading(courses: _courses, action: 'enroll'));
+    try {
+      await repository.enrollCourse(courseId, sectionId);
+      await loadCourses(refresh: true);
+    } on ApiException catch (e) {
+      emit(CourseError(e.message, previousCourses: _courses));
+    } catch (_) {
+      emit(CourseError('Failed to enroll in course.', previousCourses: _courses));
+    }
+  }
+
+  Future<void> dropCourse(String courseId) async {
+    emit(CourseActionLoading(courses: _courses, action: 'drop'));
+    try {
+      await repository.dropCourse(courseId);
+      await loadCourses(refresh: true);
+    } on ApiException catch (e) {
+      emit(CourseError(e.message, previousCourses: _courses));
+    } catch (_) {
+      emit(CourseError('Failed to drop course.', previousCourses: _courses));
+    }
+  }
+
   Future<void> addCourse(CourseItemModel course) async {
     emit(CourseActionLoading(courses: _courses, action: 'add'));
     try {

@@ -27,7 +27,7 @@ class _StudyPlanViewState extends State<StudyPlanView> {
       StudyPlanRepository(
         StudyPlanRemoteDataSource(createApiService()),
       ),
-    )..loadStudyPlan(ApiService.staticUserId);
+    )..loadStudyPlan(ApiService.dynamicStudentId ?? ApiService.dynamicUserId ?? ApiService.staticUserId);
   }
 
   @override
@@ -45,7 +45,7 @@ class _StudyPlanViewState extends State<StudyPlanView> {
         child: BlocBuilder<StudyPlanCubit, StudyPlanState>(
           builder: (context, state) {
             if (state is StudyPlanLoading || state is StudyPlanInitial) {
-              return const Center(child: CircularProgressIndicator());
+               return const Center(child: CircularProgressIndicator());
             }
             if (state is StudyPlanError) {
               return Center(
@@ -57,7 +57,7 @@ class _StudyPlanViewState extends State<StudyPlanView> {
                       child: Text(state.message, textAlign: TextAlign.center),
                     ),
                     FilledButton(
-                      onPressed: () => _cubit.retry(ApiService.staticUserId),
+                      onPressed: () => _cubit.retry(ApiService.dynamicStudentId ?? ApiService.dynamicUserId ?? ApiService.staticUserId),
                       child: const Text('إعادة المحاولة'),
                     ),
                   ],
@@ -77,7 +77,7 @@ class _StudyPlanViewState extends State<StudyPlanView> {
             final items = _planItems(plan);
 
             return RefreshIndicator(
-              onRefresh: () => _cubit.loadStudyPlan(ApiService.staticUserId),
+              onRefresh: () => _cubit.loadStudyPlan(ApiService.dynamicStudentId ?? ApiService.dynamicUserId ?? ApiService.staticUserId),
               child: ListView(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 children: [
@@ -168,6 +168,8 @@ class _PlanCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final displayStatus = course.status.isNotEmpty ? course.status : 'مُقترح';
+
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -177,31 +179,46 @@ class _PlanCourseCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            course.courseCode,
-            style: TextStyle(
-              color: const Color(0xFF1564BF),
-              fontSize: 14.sp,
-              fontWeight: FontWeight.bold,
+          if (course.courseCode.isNotEmpty) ...[
+            Text(
+              course.courseCode,
+              style: TextStyle(
+                color: const Color(0xFF1564BF),
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(height: 4.h),
+            SizedBox(height: 4.h),
+          ],
           Text(
             course.courseTitle,
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 8.h),
-          Row(
+          Wrap(
+            spacing: 12.w,
+            runSpacing: 4.h,
             children: [
-              Text('${course.creditHours} ساعات', style: TextStyle(fontSize: 12.sp)),
-              SizedBox(width: 12.w),
-              Text(course.status, style: TextStyle(fontSize: 12.sp, color: const Color(0xff5D5F6F))),
-              if (course.semesterName.isNotEmpty) ...[
-                SizedBox(width: 12.w),
+              if (course.creditHours > 0)
+                Text('${course.creditHours} ساعات', style: TextStyle(fontSize: 12.sp)),
+              Text(displayStatus, style: TextStyle(fontSize: 12.sp, color: const Color(0xff5D5F6F))),
+              if (course.semesterName.isNotEmpty)
                 Text(course.semesterName, style: TextStyle(fontSize: 12.sp, color: const Color(0xff5D5F6F))),
-              ],
             ],
           ),
+          if (course.confidence.isNotEmpty || course.score.isNotEmpty) ...[
+            SizedBox(height: 8.h),
+            Wrap(
+              spacing: 12.w,
+              runSpacing: 4.h,
+              children: [
+                if (course.confidence.isNotEmpty)
+                  Text('نسبة الثقة: ${course.confidence}', style: TextStyle(fontSize: 12.sp, color: const Color(0xFF1564BF), fontWeight: FontWeight.bold)),
+                if (course.score.isNotEmpty)
+                  Text('التقييم: ${course.score}', style: TextStyle(fontSize: 12.sp, color: const Color(0xFF1564BF), fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ],
         ],
       ),
     );

@@ -30,11 +30,13 @@ class TimetableModel {
   final int totalHours;
   final int registeredCoursesCount;
   final List<ScheduleEntryModel> entries;
+  final Map<String, dynamic>? rawJson;
 
   const TimetableModel({
     required this.totalHours,
     required this.registeredCoursesCount,
     required this.entries,
+    this.rawJson,
   });
 
   factory TimetableModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class TimetableModel {
       totalHours: schedule.totalHours,
       registeredCoursesCount: schedule.registeredCoursesCount,
       entries: schedule.entries,
+      rawJson: json,
     );
   }
 
@@ -57,13 +60,20 @@ class TimetableModel {
 
 class SaveTimetableRequestModel {
   final List<String> entryIds;
+  final String studentId;
+  final Map<String, dynamic>? timetableData;
 
-  const SaveTimetableRequestModel({this.entryIds = const []});
+  const SaveTimetableRequestModel({
+    required this.entryIds,
+    required this.studentId,
+    this.timetableData,
+  });
 
   Map<String, dynamic> toJson() {
     return {
-      if (entryIds.isNotEmpty) 'entryIds': entryIds,
-      'save': true,
+      'studentId': studentId,
+      'timetableName': 'جدول دراسي مقترح',
+      'timetableData': timetableData,
     };
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafiq/core/logic/helper_method.dart';
-import 'package:rafiq/features/profile/presentation/screens/profile_screen.dart';
+import 'package:rafiq/features/splash/presentation/screens/splash1_screen.dart';
 
 class SplashAnimation2View extends StatefulWidget {
   const SplashAnimation2View({super.key});
@@ -102,7 +102,7 @@ class _SplashAnimation2ViewState extends State<SplashAnimation2View>
                         child: ElevatedButton(
                           onPressed: () {
                              goTo(
-                               const ProfileScreen(),
+                               const Splash1(),
                              );
                           },
                           style: ElevatedButton.styleFrom(

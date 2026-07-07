@@ -154,11 +154,13 @@ class _ChatAIViewState extends State<ChatAIView> {
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
-    setState(() {
-      _localAttachmentMessages.add(
-        ChatMessage(text: '', isBot: false, image: File(image.path)),
-      );
-    });
+    if (mounted) {
+      setState(() {
+        _localAttachmentMessages.add(
+          ChatMessage(text: '', isBot: false, image: File(image.path)),
+        );
+      });
+    }
     if (mounted) Navigator.pop(context);
     _scrollToBottom();
   }
@@ -166,11 +168,13 @@ class _ChatAIViewState extends State<ChatAIView> {
   Future<void> _openCamera() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     if (image == null) return;
-    setState(() {
-      _localAttachmentMessages.add(
-        ChatMessage(text: '', isBot: false, image: File(image.path)),
-      );
-    });
+    if (mounted) {
+      setState(() {
+        _localAttachmentMessages.add(
+          ChatMessage(text: '', isBot: false, image: File(image.path)),
+        );
+      });
+    }
     if (mounted) Navigator.pop(context);
     _scrollToBottom();
   }
@@ -179,11 +183,13 @@ class _ChatAIViewState extends State<ChatAIView> {
     final result = await FilePicker.pickFiles();
     if (result == null) return;
     final fileName = result.files.single.name;
-    setState(() {
-      _localAttachmentMessages.add(
-        ChatMessage(text: '📎 $fileName', isBot: false),
-      );
-    });
+    if (mounted) {
+      setState(() {
+        _localAttachmentMessages.add(
+          ChatMessage(text: '📎 $fileName', isBot: false),
+        );
+      });
+    }
     if (mounted) Navigator.pop(context);
     _scrollToBottom();
   }
@@ -195,24 +201,82 @@ class _ChatAIViewState extends State<ChatAIView> {
     }
 
     if (!_isListening) {
-      setState(() => _isListening = true);
+      if (mounted) setState(() => _isListening = true);
       await _speech.listen(
         localeId: 'ar_EG',
         listenFor: const Duration(seconds: 30),
         pauseFor: const Duration(seconds: 3),
         onResult: (result) {
-          setState(() {
-            _controller.text = result.recognizedWords;
-            _controller.selection = TextSelection.fromPosition(
-              TextPosition(offset: _controller.text.length),
-            );
-          });
+          if (mounted) {
+            setState(() {
+              _controller.text = result.recognizedWords;
+              _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: _controller.text.length),
+              );
+            });
+          }
         },
       );
     } else {
-      setState(() => _isListening = false);
+      if (mounted) setState(() => _isListening = false);
       await _speech.stop();
     }
+  }
+
+  Widget _buildTypingIndicator() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 16.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40.w,
+            height: 40.w,
+            decoration: BoxDecoration(
+              color: const Color(0xff1565C0),
+              borderRadius: BorderRadius.circular(10.r),
+            ),
+            child: Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18.sp),
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+              decoration: BoxDecoration(
+                color: const Color(0xff1565C0),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(18.r),
+                  bottomLeft: Radius.circular(18.r),
+                  bottomRight: Radius.circular(18.r),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 12.w,
+                    height: 12.w,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Text(
+                    'رفيق يكتب...',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: Colors.white,
+                      fontFamily: 'IBMPlexSansArabic',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildBotMessage(ChatMessage msg) {
@@ -540,7 +604,32 @@ class _ChatAIViewState extends State<ChatAIView> {
             return Scaffold(
               backgroundColor: Colors.white,
               resizeToAvoidBottomInset: true,
-              appBar: const CustomAppBar(title: 'الشات الذكى'),
+              appBar: CustomAppBar(
+                title: 'الشات الذكى',
+                actions: [
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, color: Color(0xFF1564BF)),
+                    onSelected: (value) {
+                      if (value == 'new_session') {
+                        _cubit.initialize();
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'new_session',
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('محادثة جديدة', style: TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 13)),
+                            SizedBox(width: 8),
+                            Icon(Icons.chat_bubble_outline, size: 18, color: Color(0xff1565C0)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               body: Column(
                 children: [
                   Expanded(
@@ -555,8 +644,11 @@ class _ChatAIViewState extends State<ChatAIView> {
                             controller: _scrollController,
                             physics: const BouncingScrollPhysics(),
                             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 18.h),
-                            itemCount: messages.length,
+                            itemCount: messages.length + (isSending ? 1 : 0),
                             itemBuilder: (context, index) {
+                              if (index == messages.length) {
+                                return _buildTypingIndicator();
+                              }
                               final msg = messages[index];
                               if (msg.time != null) {
                                 return Column(

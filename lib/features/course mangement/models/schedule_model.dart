@@ -10,6 +10,8 @@ class ScheduleEntryModel {
   final String startTime;
   final String endTime;
   final int creditHours;
+  final String? courseId;
+  final String? lectureGroupId;
 
   const ScheduleEntryModel({
     required this.id,
@@ -21,6 +23,8 @@ class ScheduleEntryModel {
     required this.startTime,
     required this.endTime,
     required this.creditHours,
+    this.courseId,
+    this.lectureGroupId,
   });
 
   String get timeLabel {
@@ -45,6 +49,8 @@ class ScheduleEntryModel {
       startTime: readString(json, ['startTime', 'fromTime', 'timeFrom']),
       endTime: readString(json, ['endTime', 'toTime', 'timeTo']),
       creditHours: readInt(json, ['creditHours', 'credits', 'hours']),
+      courseId: readString(json, ['courseId']),
+      lectureGroupId: readString(json, ['lectureGroupId']),
     );
   }
 }

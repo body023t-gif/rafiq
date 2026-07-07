@@ -37,6 +37,26 @@ class CourseRepository {
     }
   }
 
+  Future<void> enrollCourse(String courseId, String sectionId) async {
+    try {
+      await remoteDataSource.enrollCourse(courseId, sectionId);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Failed to enroll in course.');
+    }
+  }
+
+  Future<void> dropCourse(String courseId) async {
+    try {
+      await remoteDataSource.dropCourse(courseId);
+    } on ApiException {
+      rethrow;
+    } catch (_) {
+      throw const ApiException('Failed to drop course.');
+    }
+  }
+
   Future<CourseItemModel> addCourse(CourseItemModel course) async {
     try {
       final data = await remoteDataSource.addCourse(course.toRequestJson());

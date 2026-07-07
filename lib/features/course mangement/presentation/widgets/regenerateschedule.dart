@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -91,10 +93,24 @@ class _RegenerateScheduleSheetState extends State<RegenerateScheduleSheet> {
             height: 48.h,
             radius: 14.r,
             onPressed: () async {
+              final cleanedIds = widget.courseIds.where((id) => id.isNotEmpty).toList();
+              log("Selected IDs from UI: $cleanedIds");
+              if (cleanedIds.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      "يرجى اختيار مقرر واحد على الأقل لتوليد الجدول.",
+                      style: TextStyle(fontFamily: 'Cairo'),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
               Navigator.pop(context);
               await context.read<TimetableCubit>().regenerate(
                     strategy: _strategy,
-                    courseIds: widget.courseIds,
+                    courseIds: cleanedIds,
                   );
             },
           ),

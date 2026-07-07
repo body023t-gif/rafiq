@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafiq/features/profile/models/profile_model.dart';
+import 'dart:math';
 
 class ProfileProgressCardsWidget extends StatelessWidget {
   final ProfileModel profile;
@@ -12,11 +13,11 @@ class ProfileProgressCardsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final remainingHours = (profile.totalHours - profile.completedHours).clamp(0, profile.totalHours);
+    final remainingHours = max(0, (profile.totalHours ?? 0) - (profile.completedHours ?? 0));
     final values = <String>[
-      profile.currentGpa.toStringAsFixed(2),
+      profile.currentGpa?.toStringAsFixed(2) ?? "--",
       "المستوى ${profile.level}",
-      '${profile.completedHours}',
+      '${profile.completedHours ?? "--"}',
       '$remainingHours',
       profile.academicAdvisorName,
     ];

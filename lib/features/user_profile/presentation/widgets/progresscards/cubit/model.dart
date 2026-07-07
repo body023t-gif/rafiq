@@ -1,5 +1,8 @@
+import 'dart:math';
+
 class StudentProgressModel {
   final double gpa;
+  final double cumulativeGpa;
   final String level;
   final int completedHours;
   final int remainingHours;
@@ -7,6 +10,7 @@ class StudentProgressModel {
 
   StudentProgressModel({
     required this.gpa,
+    required this.cumulativeGpa,
     required this.level,
     required this.completedHours,
     required this.remainingHours,
@@ -15,6 +19,7 @@ class StudentProgressModel {
 
   factory StudentProgressModel.fromProfile({
     required double currentGpa,
+    required double cumulativeGpa,
     required int level,
     required int completedHours,
     required int totalHours,
@@ -22,9 +27,10 @@ class StudentProgressModel {
   }) {
     return StudentProgressModel(
       gpa: currentGpa,
+      cumulativeGpa: cumulativeGpa,
       level: "المستوى $level",
       completedHours: completedHours,
-      remainingHours: (totalHours - completedHours).clamp(0, totalHours),
+      remainingHours: max(0, totalHours - completedHours),
       advisorName: advisorName,
     );
   }

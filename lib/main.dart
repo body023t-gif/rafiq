@@ -1,10 +1,56 @@
+import 'dart:async';
+import 'dart:developer' as dev;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:rafiq/core/logic/app_bloc_observer.dart';
 import 'package:rafiq/core/logic/helper_method.dart';
-import 'package:rafiq/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:rafiq/core/ui/snackbar_service.dart';
+import 'package:rafiq/core/network/session_manager.dart';
+import 'package:rafiq/features/splash/presentation/screens/splash_animation_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Initialize SessionManager
+    await SessionManager().init();
+    
+    // Set custom AppBlocObserver
+    Bloc.observer = AppBlocObserver();
+
+    // Configure FlutterError.onError
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      const isDebug = !bool.fromEnvironment('dart.vm.product');
+      if (isDebug) {
+        dev.log('Unhandled Flutter Error: ${details.exception}', stackTrace: details.stack);
+      } else {
+        SnackbarService.showErrorSnackBar('حدث خطأ غير متوقع في التطبيق.');
+      }
+    };
+
+    // Configure PlatformDispatcher onError
+    PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+      const isDebug = !bool.fromEnvironment('dart.vm.product');
+      if (isDebug) {
+        dev.log('Unhandled Platform Error: $error', stackTrace: stack);
+      } else {
+        SnackbarService.showErrorSnackBar('حدث خطأ غير متوقع في التطبيق.');
+      }
+      return true;
+    };
+
+    runApp(const MyApp());
+  }, (error, stackTrace) {
+    const isDebug = !bool.fromEnvironment('dart.vm.product');
+    if (isDebug) {
+      dev.log('Unhandled Async Error: $error', stackTrace: stackTrace);
+    } else {
+      SnackbarService.showErrorSnackBar('حدث خطأ غير متوقع في التطبيق.');
+    }
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +64,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        scaffoldMessengerKey: SnackbarService.messengerKey,
         builder: (context, child) =>
             Directionality(textDirection: TextDirection.rtl, child: child!),
         title: 'Rafiq',
@@ -27,19 +74,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'IBMPlexSansArabic',
         ),
         navigatorKey: navigatorKey,
-        home: DashboardScreen(
-  userId: "3db62f5c-1cc5-46a1-a1c6-19e5b04fd0fa",
-),
-        // PageView(
-        //   children: [
-        //     const CoursesView(),
-        //     const WelcomeChatView(),
-        //     DashboardScreen(userId: ApiService.staticUserId),
-        //     const SplashAnimationView(),
-        //     const SplashAnimation2View(),
-        //     const ProfileScreen(),
-        //   ],
-        // ),
+        home: const SplashAnimationView(),
       ),
     );
   }

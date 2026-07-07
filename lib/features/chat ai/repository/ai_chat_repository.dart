@@ -32,7 +32,39 @@ class AiChatRepository {
   Future<List<ChatMessageModel>> getHistory({String? sessionId}) async {
     try {
       final items = await remoteDataSource.getHistory(sessionId: sessionId);
-      return items.map(ChatMessageModel.fromJson).toList();
+      final List<ChatMessageModel> messages = [];
+      for (final item in items) {
+        final id = item['id']?.toString() ?? item['messageId']?.toString() ?? '';
+        final session = item['sessionId']?.toString() ?? item['chatSessionId']?.toString() ?? sessionId ?? '';
+        final question = item['question']?.toString() ?? '';
+        final answer = item['answer']?.toString() ?? '';
+        final askedAtStr = item['askedAt']?.toString() ?? item['createdAt']?.toString() ?? item['timestamp']?.toString() ?? '';
+        final askedAt = DateTime.tryParse(askedAtStr);
+
+        if (question.isNotEmpty || answer.isNotEmpty) {
+          if (question.isNotEmpty) {
+            messages.add(ChatMessageModel(
+              id: '${id}_q',
+              text: question,
+              isBot: false,
+              sessionId: session,
+              createdAt: askedAt,
+            ));
+          }
+          if (answer.isNotEmpty) {
+            messages.add(ChatMessageModel(
+              id: '${id}_a',
+              text: answer,
+              isBot: true,
+              sessionId: session,
+              createdAt: askedAt,
+            ));
+          }
+        } else {
+          messages.add(ChatMessageModel.fromJson(item));
+        }
+      }
+      return messages;
     } on ApiException {
       rethrow;
     } catch (_) {

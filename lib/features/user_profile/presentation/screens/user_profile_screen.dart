@@ -7,6 +7,7 @@ import 'package:rafiq/features/user_profile/presentation/widgets/academichistory
 import 'package:rafiq/features/user_profile/presentation/widgets/academic_history_widget.dart';
 import 'package:rafiq/features/user_profile/presentation/widgets/progresscards/cubit/model.dart';
 import 'package:rafiq/features/user_profile/presentation/widgets/profile_progress_cards_widget.dart';
+import 'package:rafiq/core/network/session_manager.dart';
 
 
 class UserProfileScreen extends StatelessWidget {
@@ -40,11 +41,13 @@ class UserProfileScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 40.r,
-                      backgroundImage: userImage != null
-                          ? FileImage(userImage!)
-                          : const AssetImage(
-                        'assets/images/default_avatar.png',
-                      ) as ImageProvider,
+                      backgroundImage: loadedProfile.profilePictureUrl.isNotEmpty && loadedProfile.profilePictureUrl != 'string'
+                          ? NetworkImage(loadedProfile.profilePictureUrl)
+                          : (userImage != null
+                              ? FileImage(userImage!)
+                              : const AssetImage(
+                            'assets/images/default_avatar.png',
+                          ) as ImageProvider),
                     ),
                     SizedBox(width: 16.w),
                     Column(
@@ -96,19 +99,66 @@ class UserProfileScreen extends StatelessWidget {
 
                 ProgressCards(
                   progress: StudentProgressModel.fromProfile(
-                    currentGpa: loadedProfile.currentGpa,
+                    currentGpa: loadedProfile.currentGpa ?? 0.0,
+                    cumulativeGpa: loadedProfile.cumulativeGpa ?? 0.0,
                     level: loadedProfile.level,
-                    completedHours: loadedProfile.completedHours,
-                    totalHours: loadedProfile.totalHours,
+                    completedHours: loadedProfile.completedHours ?? 0,
+                    totalHours: loadedProfile.totalHours ?? 0,
                     advisorName: loadedProfile.academicAdvisorName,
                   ),
                 ),
                 SizedBox(height: 24.h),
                 AcademicHistoryView(
                   semesters: _mapSemesters(loadedProfile),
-                )
-
-
+                ),
+                SizedBox(height: 32.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.h,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade50,
+                      foregroundColor: Colors.red,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14.r),
+                        side: BorderSide(color: Colors.red.shade200),
+                      ),
+                    ),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('تسجيل الخروج', style: TextStyle(fontFamily: 'IBMPlexSansArabic')),
+                          content: const Text('هل أنت متأكد أنك تريد تسجيل الخروج؟', style: TextStyle(fontFamily: 'IBMPlexSansArabic')),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(ctx),
+                              child: const Text('إلغاء', style: TextStyle(fontFamily: 'IBMPlexSansArabic')),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(ctx);
+                                SessionManager().logout();
+                              },
+                              child: const Text('تسجيل الخروج', style: TextStyle(color: Colors.red, fontFamily: 'IBMPlexSansArabic')),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text(
+                      'تسجيل الخروج',
+                      style: TextStyle(
+                        fontFamily: 'IBMPlexSansArabic',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24.h),
               ],
             ),
           ),

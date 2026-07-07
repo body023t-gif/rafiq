@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafiq/core/error/api_exception.dart';
+import 'package:rafiq/data/api/api_service.dart';
 import 'package:rafiq/features/profile/presentation/cubit/profile_state.dart';
 import 'package:rafiq/features/profile/repository/profile_repository.dart';
 
@@ -12,6 +13,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(const ProfileLoading());
     try {
       final profile = await repository.getProfile();
+      ApiService.dynamicStudentId = profile.id;
       emit(ProfileLoaded(profile));
     } on ApiException catch (e) {
       emit(ProfileError(e.message));

@@ -55,3 +55,20 @@ TimetableModel? readTimetable(TimetableState state) {
 StudentScheduleModel? timetableAsSchedule(TimetableState state) {
   return readTimetable(state)?.toScheduleModel();
 }
+
+bool isTimetableBusy(TimetableState state) {
+  return state is TimetableGenerating || state is TimetableSaving;
+}
+
+bool hasGeneratedTimetable(TimetableState state) {
+  if (state is TimetableGenerated) return true;
+  if (state is TimetableError && state.previousTimetable?.rawJson != null) {
+    return true;
+  }
+  return false;
+}
+
+bool canSaveTimetable(TimetableState state) {
+  if (isTimetableBusy(state)) return false;
+  return hasGeneratedTimetable(state);
+}

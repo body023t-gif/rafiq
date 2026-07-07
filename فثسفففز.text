@@ -1,0 +1,773 @@
+{
+  "success": true,
+  "errors": {},
+  "data": {
+    "items": [
+      {
+        "id": "ae3c70c8-e434-4961-8a63-2828368ab0de",
+        "documentType": "خطاب تدريب صيفي (Summer Internship)",
+        "status": "Pending",
+        "studentId": "30aae598-4c71-4920-bfb4-2a5585e54ce6",
+        "student": {
+          "fullName": "فاطمة عاشور",
+          "email": "Newell.Weber2122@rafeek.edu",
+          "universityCode": "202610001",
+          "department": {
+            "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+            "name": "نظم المعلومات"
+          },
+          "status": "Active",
+          "level": 3,
+          "term": 5,
+          "academicProfileDto": {
+            "academicProfileId": "fedd99b3-d83b-41a8-9087-a4e20a36d20e",
+            "gpa": 2.86,
+            "cgpa": 2.79,
+            "completedCredits": 64,
+            "remainingCredits": 84
+          },
+          "advisor": {
+            "id": "f0b8176c-56fb-4d38-9752-daf3e65487c1",
+            "userId": "a9095152-c4f7-4839-a588-d0619eac99c9",
+            "advisorName": "سارة صلاح",
+            "email": "Stone.Kirlin2651@rafeek.edu",
+            "employeeCode": "DOC1010",
+            "department": {
+              "id": "12bbbed9-eb46-4ebd-b73b-8ffc7654cfab",
+              "name": "تكنولوجيا المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3236991",
+        "updatedAt": "2026-07-06T20:18:51.5113267"
+      },
+      {
+        "id": "b86fd51e-a479-4c9e-ad0d-004605a1e30d",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "2904a122-90df-450a-b896-a470398a4791",
+        "student": {
+          "fullName": "بلال آدم",
+          "email": "Wilton_Kuvalis33@rafeek.edu",
+          "universityCode": "202610003",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Active",
+          "level": 1,
+          "term": 1,
+          "academicProfileDto": {
+            "academicProfileId": "dae64795-b1f8-44df-9ff7-fb90f8506bdb",
+            "gpa": 2.46,
+            "cgpa": 2.33,
+            "completedCredits": 12,
+            "remainingCredits": 144
+          },
+          "advisor": {
+            "id": "78c4c81b-8ad9-447e-af61-73e259a36820",
+            "userId": "da076b3f-f2a4-4427-8a83-a6707751e7d7",
+            "advisorName": "ريم فريد",
+            "email": "Linnie.Kuhn23@rafeek.edu",
+            "employeeCode": "DOC1005",
+            "department": {
+              "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+              "name": "الذكاء الاصطناعي"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574368"
+      },
+      {
+        "id": "ec411e22-2eb9-4420-a3ed-2b67e413f5b3",
+        "documentType": "اثبات قيد",
+        "status": "Pending",
+        "remarks": "يشسنبتمنمشسيتب",
+        "topic": "يسشمبتشمنسيب",
+        "attachmentUrl": "",
+        "studentId": "e3307426-4d72-4197-a67d-3002021010d4",
+        "student": {
+          "fullName": "جابر‌ عصار",
+          "email": "Gardner_Rodriguez19@rafeek.edu",
+          "universityCode": "202610004",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 7,
+          "academicProfileDto": {
+            "academicProfileId": "369dd761-59d2-43d6-90b9-ea2624c5343a",
+            "gpa": 3.27,
+            "cgpa": 3.16,
+            "completedCredits": 103,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "689ae676-c911-4c24-a38c-02cca35f75ae",
+            "userId": "ad47c3c1-edd9-4bf3-bb9a-63e6a47318e7",
+            "advisorName": "ربيع عارف",
+            "email": "Elwin_Borer9@rafeek.edu",
+            "employeeCode": "DOC1003",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-05T18:03:17.570638",
+        "updatedAt": "2026-07-06T20:18:49.8831009"
+      },
+      {
+        "id": "640cfd8a-79e4-4141-bf15-237fba28a503",
+        "documentType": "استخراج بطاقة جامعية (ID Card Request)",
+        "status": "Pending",
+        "studentId": "c35a1dae-eab6-42fc-a78d-2ca7b8cb521b",
+        "student": {
+          "fullName": "دانا هاشم",
+          "email": "Colt7057@rafeek.edu",
+          "universityCode": "202610005",
+          "department": {
+            "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+            "name": "الذكاء الاصطناعي"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 3,
+          "academicProfileDto": {
+            "academicProfileId": "df067baf-d027-4269-8245-7f662ef49c5e",
+            "gpa": 2.9,
+            "cgpa": 2.78,
+            "completedCredits": 33,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "f9d2fd18-0a1b-4ca1-a012-977070de4276",
+            "userId": "3f74203f-404d-48de-8b41-d5c708f3baa4",
+            "advisorName": "سعيد سالم",
+            "email": "Cordie_Sawayn648@rafeek.edu",
+            "employeeCode": "DOC1011",
+            "department": {
+              "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+              "name": "نظم المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237012",
+        "updatedAt": "2026-07-06T20:18:44.7850235"
+      },
+      {
+        "id": "72b3c7c7-b38e-4224-9d1a-0650fe5af8f8",
+        "documentType": "بيان درجات رسمي (Transcript)",
+        "status": "Pending",
+        "studentId": "82f17a29-cdd7-4ca4-824d-f8fcddf73c08",
+        "student": {
+          "fullName": "صلاح سالم",
+          "email": "Kane_Klein31@rafeek.edu",
+          "universityCode": "202610007",
+          "department": {
+            "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+            "name": "الذكاء الاصطناعي"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 4,
+          "academicProfileDto": {
+            "academicProfileId": "41019b6d-e424-40da-bd1a-78fc85d0e42d",
+            "gpa": 2.72,
+            "cgpa": 2.65,
+            "completedCredits": 41,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "689ae676-c911-4c24-a38c-02cca35f75ae",
+            "userId": "ad47c3c1-edd9-4bf3-bb9a-63e6a47318e7",
+            "advisorName": "ربيع عارف",
+            "email": "Elwin_Borer9@rafeek.edu",
+            "employeeCode": "DOC1003",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.457453"
+      },
+      {
+        "id": "7438cabc-5025-438a-a634-0d784299a486",
+        "documentType": "خطاب تدريب صيفي (Summer Internship)",
+        "status": "Pending",
+        "studentId": "82f17a29-cdd7-4ca4-824d-f8fcddf73c08",
+        "student": {
+          "fullName": "صلاح سالم",
+          "email": "Kane_Klein31@rafeek.edu",
+          "universityCode": "202610007",
+          "department": {
+            "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+            "name": "الذكاء الاصطناعي"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 4,
+          "academicProfileDto": {
+            "academicProfileId": "41019b6d-e424-40da-bd1a-78fc85d0e42d",
+            "gpa": 2.72,
+            "cgpa": 2.65,
+            "completedCredits": 41,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "689ae676-c911-4c24-a38c-02cca35f75ae",
+            "userId": "ad47c3c1-edd9-4bf3-bb9a-63e6a47318e7",
+            "advisorName": "ربيع عارف",
+            "email": "Elwin_Borer9@rafeek.edu",
+            "employeeCode": "DOC1003",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3236965",
+        "updatedAt": "2026-07-06T20:18:27.2797449"
+      },
+      {
+        "id": "5c47f1f1-ab7d-4a43-a003-1373e92e2320",
+        "documentType": "string",
+        "status": "Pending",
+        "remarks": "string",
+        "studentId": "bb220000-0000-0000-0000-000000000002",
+        "student": {
+          "fullName": "فؤاد صلاح",
+          "email": "fad.slah@mans.edu.eg",
+          "universityCode": "202607001",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Inactive",
+          "level": 1,
+          "term": 1,
+          "academicProfileDto": {
+            "academicProfileId": "aa110000-0000-0000-0000-000000000001",
+            "gpa": 2.63,
+            "cgpa": 2.49,
+            "completedCredits": 45,
+            "remainingCredits": 90
+          },
+          "advisor": {
+            "id": "01dd63cd-c4ec-42a8-8daf-bf4a28dff228",
+            "userId": "d5358b9f-4eec-46d7-a34a-144cd4312574",
+            "advisorName": "آدم آدم",
+            "email": "Mallory.Gusikowski20@rafeek.edu",
+            "employeeCode": "DOC1000",
+            "department": {
+              "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+              "name": "الذكاء الاصطناعي"
+            }
+          }
+        },
+        "createdAt": "2026-07-03T22:08:11.5440009",
+        "updatedAt": "2026-07-06T20:18:31.4182646"
+      },
+      {
+        "id": "b63f39ce-ddab-4ab0-9bbf-178a8c4c9ddd",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "bb220000-0000-0000-0000-000000000002",
+        "student": {
+          "fullName": "فؤاد صلاح",
+          "email": "fad.slah@mans.edu.eg",
+          "universityCode": "202607001",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Inactive",
+          "level": 1,
+          "term": 1,
+          "academicProfileDto": {
+            "academicProfileId": "aa110000-0000-0000-0000-000000000001",
+            "gpa": 2.63,
+            "cgpa": 2.49,
+            "completedCredits": 45,
+            "remainingCredits": 90
+          },
+          "advisor": {
+            "id": "01dd63cd-c4ec-42a8-8daf-bf4a28dff228",
+            "userId": "d5358b9f-4eec-46d7-a34a-144cd4312574",
+            "advisorName": "آدم آدم",
+            "email": "Mallory.Gusikowski20@rafeek.edu",
+            "employeeCode": "DOC1000",
+            "department": {
+              "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+              "name": "الذكاء الاصطناعي"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574474"
+      },
+      {
+        "id": "c92410e4-3aae-4357-a390-3296636f1346",
+        "documentType": "استخراج بطاقة جامعية (ID Card Request)",
+        "status": "Pending",
+        "studentId": "c63cc97d-3589-44c1-bfb1-11afeedb8305",
+        "student": {
+          "fullName": "أروى فاروق",
+          "email": "Saul_Deckow52@rafeek.edu",
+          "universityCode": "202610009",
+          "department": {
+            "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+            "name": "الذكاء الاصطناعي"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 7,
+          "academicProfileDto": {
+            "academicProfileId": "bf313589-df1b-43eb-9b00-18db6efca9e4",
+            "gpa": 3.53,
+            "cgpa": 3.48,
+            "completedCredits": 94,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "f0b8176c-56fb-4d38-9752-daf3e65487c1",
+            "userId": "a9095152-c4f7-4839-a588-d0619eac99c9",
+            "advisorName": "سارة صلاح",
+            "email": "Stone.Kirlin2651@rafeek.edu",
+            "employeeCode": "DOC1010",
+            "department": {
+              "id": "12bbbed9-eb46-4ebd-b73b-8ffc7654cfab",
+              "name": "تكنولوجيا المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237115",
+        "updatedAt": "2026-07-06T20:19:09.4959153"
+      },
+      {
+        "id": "8e75b6f4-6865-499c-b963-0abff3578c5b",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "f6a66f15-aa4e-423f-b718-670317bf8917",
+        "student": {
+          "fullName": "آية عراقی",
+          "email": "Nadia_Strosin44@rafeek.edu",
+          "universityCode": "202610010",
+          "department": {
+            "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+            "name": "نظم المعلومات"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 7,
+          "academicProfileDto": {
+            "academicProfileId": "17c8775d-2f60-4f69-86ca-4635dd74c808",
+            "gpa": 2.59,
+            "cgpa": 2.59,
+            "completedCredits": 92,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "689ae676-c911-4c24-a38c-02cca35f75ae",
+            "userId": "ad47c3c1-edd9-4bf3-bb9a-63e6a47318e7",
+            "advisorName": "ربيع عارف",
+            "email": "Elwin_Borer9@rafeek.edu",
+            "employeeCode": "DOC1003",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237023",
+        "updatedAt": "2026-07-06T20:18:19.0266465"
+      },
+      {
+        "id": "3e4b2499-a224-4169-9877-0784245920ca",
+        "documentType": "بيان درجات رسمي (Transcript)",
+        "status": "Pending",
+        "studentId": "df434acb-a783-4574-aeb8-ebe684fde832",
+        "student": {
+          "fullName": "أروى سالم",
+          "email": "Francis.OConner9724@rafeek.edu",
+          "universityCode": "202610011",
+          "department": {
+            "id": "18a40bce-976e-4933-9d88-478a192d76ef",
+            "name": "هندسة البرمجيات"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 4,
+          "academicProfileDto": {
+            "academicProfileId": "92253b98-597c-41a9-80d2-613dd3c5517d",
+            "gpa": 3,
+            "cgpa": 2.97,
+            "completedCredits": 35,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "f0b8176c-56fb-4d38-9752-daf3e65487c1",
+            "userId": "a9095152-c4f7-4839-a588-d0619eac99c9",
+            "advisorName": "سارة صلاح",
+            "email": "Stone.Kirlin2651@rafeek.edu",
+            "employeeCode": "DOC1010",
+            "department": {
+              "id": "12bbbed9-eb46-4ebd-b73b-8ffc7654cfab",
+              "name": "تكنولوجيا المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237003",
+        "updatedAt": "2026-07-06T20:18:17.7601934"
+      },
+      {
+        "id": "97a59527-f87d-43d8-9521-305299fed271",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "df434acb-a783-4574-aeb8-ebe684fde832",
+        "student": {
+          "fullName": "أروى سالم",
+          "email": "Francis.OConner9724@rafeek.edu",
+          "universityCode": "202610011",
+          "department": {
+            "id": "18a40bce-976e-4933-9d88-478a192d76ef",
+            "name": "هندسة البرمجيات"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 4,
+          "academicProfileDto": {
+            "academicProfileId": "92253b98-597c-41a9-80d2-613dd3c5517d",
+            "gpa": 3,
+            "cgpa": 2.97,
+            "completedCredits": 35,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "f0b8176c-56fb-4d38-9752-daf3e65487c1",
+            "userId": "a9095152-c4f7-4839-a588-d0619eac99c9",
+            "advisorName": "سارة صلاح",
+            "email": "Stone.Kirlin2651@rafeek.edu",
+            "employeeCode": "DOC1010",
+            "department": {
+              "id": "12bbbed9-eb46-4ebd-b73b-8ffc7654cfab",
+              "name": "تكنولوجيا المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237033",
+        "updatedAt": "2026-07-06T20:18:53.7208827"
+      },
+      {
+        "id": "1e8470ad-3a67-47e9-8093-02586cb275ad",
+        "documentType": "استخراج بطاقة جامعية (ID Card Request)",
+        "status": "Pending",
+        "studentId": "e826360c-d175-4f71-b6f6-541d777ee7e4",
+        "student": {
+          "fullName": "زينب آدم",
+          "email": "Dejon_Rowe56@rafeek.edu",
+          "universityCode": "202610012",
+          "department": {
+            "id": "32811ea8-0f1b-44be-871c-980e97186a1e",
+            "name": "المعلوماتية الحيوية"
+          },
+          "status": "Active",
+          "level": 3,
+          "term": 5,
+          "academicProfileDto": {
+            "academicProfileId": "5292299f-3ae6-40f1-8b5c-15b1e896c102",
+            "gpa": 3.09,
+            "cgpa": 3.05,
+            "completedCredits": 60,
+            "remainingCredits": 84
+          },
+          "advisor": {
+            "id": "850300c0-cc5d-4b6f-9201-59d5fbec829f",
+            "userId": "e442a484-edc6-48b4-8d26-bd5d2a3768ec",
+            "advisorName": "رقية فاروق",
+            "email": "Akeem_Johnston18@rafeek.edu",
+            "employeeCode": "DOC1007",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574484"
+      },
+      {
+        "id": "baa12735-b0c6-4820-950b-2520b7a3b77c",
+        "documentType": "خطاب تدريب صيفي (Summer Internship)",
+        "status": "Pending",
+        "studentId": "e826360c-d175-4f71-b6f6-541d777ee7e4",
+        "student": {
+          "fullName": "زينب آدم",
+          "email": "Dejon_Rowe56@rafeek.edu",
+          "universityCode": "202610012",
+          "department": {
+            "id": "32811ea8-0f1b-44be-871c-980e97186a1e",
+            "name": "المعلوماتية الحيوية"
+          },
+          "status": "Active",
+          "level": 3,
+          "term": 5,
+          "academicProfileDto": {
+            "academicProfileId": "5292299f-3ae6-40f1-8b5c-15b1e896c102",
+            "gpa": 3.09,
+            "cgpa": 3.05,
+            "completedCredits": 60,
+            "remainingCredits": 84
+          },
+          "advisor": {
+            "id": "850300c0-cc5d-4b6f-9201-59d5fbec829f",
+            "userId": "e442a484-edc6-48b4-8d26-bd5d2a3768ec",
+            "advisorName": "رقية فاروق",
+            "email": "Akeem_Johnston18@rafeek.edu",
+            "employeeCode": "DOC1007",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574415"
+      },
+      {
+        "id": "ad40c4e4-8388-41ea-833b-15df26143644",
+        "documentType": "استخراج بطاقة جامعية (ID Card Request)",
+        "status": "Pending",
+        "studentId": "1ecba7ed-d061-446f-b5d8-61469f504537",
+        "student": {
+          "fullName": "هاجر عزیز",
+          "email": "Sean_Jerde28@rafeek.edu",
+          "universityCode": "202610013",
+          "department": {
+            "id": "12bbbed9-eb46-4ebd-b73b-8ffc7654cfab",
+            "name": "تكنولوجيا المعلومات"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 3,
+          "academicProfileDto": {
+            "academicProfileId": "1a736b5f-7a4b-4be3-a24b-fd232409232a",
+            "gpa": 3.04,
+            "cgpa": 2.91,
+            "completedCredits": 37,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "850300c0-cc5d-4b6f-9201-59d5fbec829f",
+            "userId": "e442a484-edc6-48b4-8d26-bd5d2a3768ec",
+            "advisorName": "رقية فاروق",
+            "email": "Akeem_Johnston18@rafeek.edu",
+            "employeeCode": "DOC1007",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237051",
+        "updatedAt": "2026-07-06T20:18:53.0693212"
+      },
+      {
+        "id": "cad658a0-3a1d-4cc4-96ea-28c0096adaae",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "42c1d05e-1ced-4541-87a1-ac1bd6b33759",
+        "student": {
+          "fullName": "فاطمة حسن",
+          "email": "Krista_Walker37@rafeek.edu",
+          "universityCode": "202610016",
+          "department": {
+            "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+            "name": "نظم المعلومات"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 3,
+          "academicProfileDto": {
+            "academicProfileId": "a4cfdaf3-3844-4145-9818-1b9157125fa1",
+            "gpa": 2.96,
+            "cgpa": 2.8,
+            "completedCredits": 36,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "850300c0-cc5d-4b6f-9201-59d5fbec829f",
+            "userId": "e442a484-edc6-48b4-8d26-bd5d2a3768ec",
+            "advisorName": "رقية فاروق",
+            "email": "Akeem_Johnston18@rafeek.edu",
+            "employeeCode": "DOC1007",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574553"
+      },
+      {
+        "id": "b0c2cc88-18e8-4c0c-b387-2adca1385261",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "d38abb53-2ff2-4b8e-8031-7b7733aa9850",
+        "student": {
+          "fullName": "منى عقیل",
+          "email": "Syble.Mueller54@rafeek.edu",
+          "universityCode": "202610022",
+          "department": {
+            "id": "4319d1c7-6f23-455e-9cd7-435dacc3f5d7",
+            "name": "الذكاء الاصطناعي"
+          },
+          "status": "Active",
+          "level": 2,
+          "term": 4,
+          "academicProfileDto": {
+            "academicProfileId": "5c69a46a-465c-4f32-897f-18ed80433b9a",
+            "gpa": 3,
+            "cgpa": 2.94,
+            "completedCredits": 44,
+            "remainingCredits": 114
+          },
+          "advisor": {
+            "id": "3a2be322-6b6c-4d1d-91da-7b6f6af8372e",
+            "userId": "ce44203f-1de1-40cc-8dd8-e00c43711862",
+            "advisorName": "أسامة عزیز",
+            "email": "Deon.Lind3232@rafeek.edu",
+            "employeeCode": "DOC1012",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-07-06T23:09:18.4574517"
+      },
+      {
+        "id": "ce914c8f-8c80-466b-acc7-2c84d5a2a473",
+        "documentType": "استخراج بطاقة جامعية (ID Card Request)",
+        "status": "Pending",
+        "studentId": "dfd2bd39-ad34-470e-96ab-39a5083a597d",
+        "student": {
+          "fullName": "رنا فاروق",
+          "email": "Esther6810@rafeek.edu",
+          "universityCode": "202610023",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 8,
+          "academicProfileDto": {
+            "academicProfileId": "4a3a086e-c349-45cc-96a4-b5b839638917",
+            "gpa": 3.1,
+            "cgpa": 2.98,
+            "completedCredits": 100,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "6673786a-6f6c-48d3-88c7-a4534706b0b4",
+            "userId": "468ed743-b0c4-46e8-97de-1be4774464b5",
+            "advisorName": "زيد أمجد",
+            "email": "Leanne.Strosin11@rafeek.edu",
+            "employeeCode": "DOC1001",
+            "department": {
+              "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+              "name": "نظم المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237121",
+        "updatedAt": "2026-07-06T20:19:07.8221418"
+      },
+      {
+        "id": "f51855b0-6acf-420b-be12-34b15da191dc",
+        "documentType": "خطاب تدريب صيفي (Summer Internship)",
+        "status": "Pending",
+        "studentId": "dfd2bd39-ad34-470e-96ab-39a5083a597d",
+        "student": {
+          "fullName": "رنا فاروق",
+          "email": "Esther6810@rafeek.edu",
+          "universityCode": "202610023",
+          "department": {
+            "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+            "name": "علوم الحاسب"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 8,
+          "academicProfileDto": {
+            "academicProfileId": "4a3a086e-c349-45cc-96a4-b5b839638917",
+            "gpa": 3.1,
+            "cgpa": 2.98,
+            "completedCredits": 100,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "6673786a-6f6c-48d3-88c7-a4534706b0b4",
+            "userId": "468ed743-b0c4-46e8-97de-1be4774464b5",
+            "advisorName": "زيد أمجد",
+            "email": "Leanne.Strosin11@rafeek.edu",
+            "employeeCode": "DOC1001",
+            "department": {
+              "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+              "name": "نظم المعلومات"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237049",
+        "updatedAt": "2026-07-06T20:18:55.6825782"
+      },
+      {
+        "id": "9af3ebd9-7077-4a6d-bdd7-28a2a44ada6f",
+        "documentType": "إثبات قيد طالب (Enrollment Proof)",
+        "status": "Pending",
+        "studentId": "25207b10-de78-4182-a89d-ff4710f96542",
+        "student": {
+          "fullName": "فاطمة سالم",
+          "email": "Jess.Harvey15@rafeek.edu",
+          "universityCode": "202610027",
+          "department": {
+            "id": "dde3e3e1-0396-41f6-a0f7-3ae45da79367",
+            "name": "نظم المعلومات"
+          },
+          "status": "Active",
+          "level": 4,
+          "term": 7,
+          "academicProfileDto": {
+            "academicProfileId": "6202b40f-b62d-487a-bc16-f7c9e212434a",
+            "gpa": 2.77,
+            "cgpa": 2.75,
+            "completedCredits": 100,
+            "remainingCredits": 54
+          },
+          "advisor": {
+            "id": "9e966ef2-1e95-4664-b8dd-0db14d7dd43b",
+            "userId": "b12bdad5-1547-40bd-8c59-909b8d8d8651",
+            "advisorName": "إيناس فؤاد",
+            "email": "Elena8912@rafeek.edu",
+            "employeeCode": "DOC1014",
+            "department": {
+              "id": "848193cb-1fa7-4383-b10d-10db99b84246",
+              "name": "علوم الحاسب"
+            }
+          }
+        },
+        "createdAt": "2026-06-26T22:15:43.3237015",
+        "updatedAt": "2026-07-06T20:18:50.7392625"
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalPages": 6,
+    "totalCount": 107,
+    "hasPreviousPage": false,
+    "hasNextPage": true
+  },
+  "message": "تم تنفيذ العملية بنجاح",
+  "statusCode": 200
+}

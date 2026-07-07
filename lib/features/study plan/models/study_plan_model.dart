@@ -6,6 +6,8 @@ class StudyPlanCourseModel {
   final int creditHours;
   final String status;
   final String semesterName;
+  final String confidence;
+  final String score;
 
   const StudyPlanCourseModel({
     required this.courseCode,
@@ -13,6 +15,8 @@ class StudyPlanCourseModel {
     required this.creditHours,
     required this.status,
     required this.semesterName,
+    this.confidence = '',
+    this.score = '',
   });
 
   factory StudyPlanCourseModel.fromJson(Map<String, dynamic> json) {
@@ -20,8 +24,10 @@ class StudyPlanCourseModel {
       courseCode: readString(json, ['courseCode', 'code']),
       courseTitle: readString(json, ['courseTitle', 'title', 'name']),
       creditHours: readInt(json, ['creditHours', 'credits', 'hours']),
-      status: readString(json, ['status', 'courseStatus'], 'planned'),
+      status: readString(json, ['status', 'courseStatus']),
       semesterName: readString(json, ['semesterName', 'semester', 'term']),
+      confidence: readString(json, ['confidence', 'Confidence']),
+      score: readString(json, ['score', 'Score']),
     );
   }
 }
@@ -65,11 +71,41 @@ class StudyPlanModel {
   bool get isEmpty => semesters.isEmpty && courses.isEmpty;
 
   factory StudyPlanModel.fromJson(Map<String, dynamic> json) {
+    // TODO(Backend): Replace this temporary mapping with the dedicated Study Plan Improvement endpoint when it becomes available.
+    
+    // Parse the recommendations array if available, fallback to courses/items
+    final recommendationsRaw = json['recommendations'];
+    List<StudyPlanCourseModel> flatCourses = [];
+    
+    if (recommendationsRaw is List) {
+      flatCourses = recommendationsRaw.map((e) {
+        if (e is String) {
+          return StudyPlanCourseModel(
+            courseCode: '',
+            courseTitle: e,
+            creditHours: 0,
+            status: '',
+            semesterName: '',
+          );
+        } else if (e is Map<String, dynamic>) {
+          return StudyPlanCourseModel.fromJson(e);
+        }
+        return const StudyPlanCourseModel(
+          courseCode: '',
+          courseTitle: 'Unknown',
+          creditHours: 0,
+          status: '',
+          semesterName: '',
+        );
+      }).toList();
+    } else {
+      flatCourses = readMapList(json, ['courses', 'planCourses', 'items'])
+          .map(StudyPlanCourseModel.fromJson)
+          .toList();
+    }
+
     final semesters = readMapList(json, ['semesters', 'terms', 'planSemesters'])
         .map(StudyPlanSemesterModel.fromJson)
-        .toList();
-    final flatCourses = readMapList(json, ['courses', 'planCourses', 'items'])
-        .map(StudyPlanCourseModel.fromJson)
         .toList();
 
     return StudyPlanModel(

@@ -11,7 +11,8 @@ class ProgressCards extends StatelessWidget {
   });
 
   final List<String> labels = [
-    "معدلك الحالي",
+    "المعدل الحالي",
+    "المعدل التراكمي",
     "الصف الدراسي",
     "الساعات المكتملة",
     "الساعات المتبقية",
@@ -27,12 +28,14 @@ class ProgressCards extends StatelessWidget {
         case 0:
           return progress.gpa.toStringAsFixed(2);
         case 1:
-          return progress.level;
+          return progress.cumulativeGpa.toStringAsFixed(2);
         case 2:
-          return "${progress.completedHours}";
+          return progress.level;
         case 3:
-          return "${progress.remainingHours}";
+          return "${progress.completedHours}";
         case 4:
+          return "${progress.remainingHours}";
+        case 5:
           return progress.advisorName;
         default:
           return "0";
@@ -65,8 +68,8 @@ class ProgressCards extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight:
-                index == 4 ? FontWeight.w500 : FontWeight.w600,
-                color: index == 4
+                index == 5 ? FontWeight.w500 : FontWeight.w600,
+                color: index == 5
                     ? Colors.black
                     : const Color(0xFF1564BF),
               ),
@@ -102,7 +105,15 @@ class ProgressCards extends StatelessWidget {
                 ],
               ),
               SizedBox(height: spacing),
-              buildCard(4, width: constraints.maxWidth),
+              Row(
+                children: [
+                  buildCard(4, width: cardWidth),
+                  SizedBox(width: spacing),
+                  SizedBox(width: cardWidth), // Spacer to balance the row
+                ],
+              ),
+              SizedBox(height: spacing),
+              buildCard(5, width: constraints.maxWidth),
             ],
           ),
         );
