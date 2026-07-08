@@ -116,4 +116,87 @@ class AuthRepository {
       throw ApiException(e.toString());
     }
   }
+
+  Future<bool> checkConfirmationCode(String email, String code) async {
+    try {
+      final response = await _dio.post(
+        '/v1/api/check-confirmation-code',
+        data: {
+          'email': email,
+          'confirmationCode': code,
+        },
+      );
+      final responseData = response.data;
+      if (responseData is Map<String, dynamic>) {
+        if (responseData.containsKey('success')) {
+          return responseData['success'] == true;
+        }
+      }
+      if (responseData is bool) {
+        return responseData;
+      }
+      return true;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      String message = 'Verification failed.';
+      if (data is Map<String, dynamic>) {
+        message = data['message'] ?? data['detail'] ?? data['error'] ?? message;
+      }
+      throw ApiException(message, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
+
+  Future<bool> activateUniversityEmail(String email, String code) async {
+    final url = '${_dio.options.baseUrl}/v1/api/activate-university-email';
+    final headers = _dio.options.headers;
+    final requestBody = {
+      'email': email,
+      'confirmationCode': code,
+    };
+    
+    log('========== activation request ==========');
+    log('URL: $url');
+    log('HTTP Method: POST');
+    log('Headers: $headers');
+    log('Authorization Header: ${headers['Authorization']}');
+    log('Body: $requestBody');
+    log('=======================================');
+
+    try {
+      final response = await _dio.post(
+        '/v1/api/activate-university-email',
+        data: requestBody,
+      );
+      final responseData = response.data;
+      log('========== activation response (success) ==========');
+      log('Status Code: ${response.statusCode}');
+      log('Raw Response: $responseData');
+      log('==================================================');
+      if (responseData is Map<String, dynamic>) {
+        if (responseData.containsKey('success')) {
+          return responseData['success'] == true;
+        }
+      }
+      if (responseData is bool) {
+        return responseData;
+      }
+      return true;
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      log('========== activation response (error) ==========');
+      log('Status Code: ${e.response?.statusCode}');
+      log('Raw Response: $data');
+      log('Headers: ${e.response?.headers}');
+      log('================================================');
+      String message = 'Activation failed.';
+      if (data is Map<String, dynamic>) {
+        message = data['message'] ?? data['detail'] ?? data['error'] ?? message;
+      }
+      throw ApiException(message, statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw ApiException(e.toString());
+    }
+  }
 }

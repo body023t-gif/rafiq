@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafiq/features/auth/helpers/auth_colors.dart';
 import 'package:rafiq/features/auth/helpers/auth_text_style.dart';
 import 'package:rafiq/features/auth/repository/auth_repository.dart';
@@ -100,13 +100,13 @@ class _ConfirmationCodeScreenState extends State<ConfirmationCodeScreen> {
       ApiService.dynamicUserId = loginResponse.id;
 
       // Print login session info
-      print('================= Login Session Verified (Activation) =================');
-      print('User ID: ${loginResponse.id}');
-      print('Role: ${loginResponse.roles}');
-      print('Email: ${loginResponse.email}');
-      print('Token exists?: ${loginResponse.token != null}');
-      print('Refresh token exists?: ${loginResponse.refreshToken != null}');
-      print('======================================================================');
+      log('================= Login Session Verified (Activation) =================');
+      log('User ID: ${loginResponse.id}');
+      log('Role: ${loginResponse.roles}');
+      log('Email: ${loginResponse.email}');
+      log('Token exists?: ${loginResponse.token != null}');
+      log('Refresh token exists?: ${loginResponse.refreshToken != null}');
+      log('======================================================================');
 
       if (!mounted) return;
 

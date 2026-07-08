@@ -11,10 +11,10 @@ import 'package:rafiq/features/auth/helpers/auth_colors.dart';
 import 'package:rafiq/features/auth/presentation/widgets/custom_text_field.dart';
 import 'reset_password_screen.dart';
 import 'package:rafiq/features/dashboard/presentation/screens/home_screen.dart';
-import 'package:rafiq/data/api/api_service.dart';
 import 'package:rafiq/core/network/session_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rafiq/core/ui/snackbar_service.dart';
+import 'confirmation_code_screen.dart';
 
 class InitialLogin extends StatefulWidget {
   const InitialLogin({super.key});
@@ -109,7 +109,22 @@ class _InitialLoginState extends State<InitialLogin> {
               final errText = state.error.replaceAll('ApiException: ', '');
               log('DEBUG [InitialLogin]: Received AuthError state.');
               log('DEBUG [InitialLogin]: Error Text = $errText');
-              SnackbarService.showErrorSnackBar(errText);
+              
+              if (errText.contains('Email is not activated yet')) {
+                if (context.mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmationCodeScreen(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      ),
+                    ),
+                  );
+                }
+              } else {
+                SnackbarService.showErrorSnackBar(errText);
+              }
             }
           },
           child: Builder(builder: (context) {

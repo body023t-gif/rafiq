@@ -10,17 +10,51 @@ import 'package:rafiq/features/auth/data/models/reset_password_command.dart';
 import 'initial_login_screen.dart';
 import 'package:rafiq/core/ui/snackbar_service.dart';
 
-class NewPassword extends StatelessWidget {
+class NewPassword extends StatefulWidget {
   final String userEmail;
   const NewPassword({super.key, required this.userEmail});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController(text: userEmail);
-    final TextEditingController tokenController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    final TextEditingController confirmPasswordController = TextEditingController();
+  State<NewPassword> createState() => _NewPasswordState();
+}
 
+class _NewPasswordState extends State<NewPassword> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController tokenController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  bool _isTokenFormatValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = widget.userEmail;
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    tokenController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _verifyTokenFormat() {
+    final token = tokenController.text.trim();
+    if (token.isEmpty) {
+      SnackbarService.showErrorSnackBar("برجاء إدخال رمز التحقق");
+      return;
+    }
+    
+    setState(() {
+      _isTokenFormatValid = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthCubit(AuthRepository()),
       child: Scaffold(
@@ -80,22 +114,36 @@ class NewPassword extends StatelessWidget {
                           controller: tokenController,
                           hintText: 'رمز التحقق (Token)',
                           suffixIcon: Icons.key_outlined,
+                          readOnly: _isTokenFormatValid,
                         ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
-                          controller: passwordController,
-                          hintText: 'كلمة المرور الجديدة',
-                          suffixIcon: Icons.lock_outline,
-                          isPassword: true,
+                        
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: _isTokenFormatValid
+                              ? Column(
+                                  children: [
+                                    const SizedBox(height: 16),
+                                    CustomTextField(
+                                      controller: passwordController,
+                                      hintText: 'كلمة المرور الجديدة',
+                                      suffixIcon: Icons.lock_outline,
+                                      isPassword: true,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    CustomTextField(
+                                      controller: confirmPasswordController,
+                                      hintText: 'تأكيد كلمة المرور الجديدة',
+                                      suffixIcon: Icons.lock_outline,
+                                      isPassword: true,
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox.shrink(),
                         ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
-                          controller: confirmPasswordController,
-                          hintText: 'تأكيد كلمة المرور الجديدة',
-                          suffixIcon: Icons.lock_outline,
-                          isPassword: true,
-                        ),
+                        
                         const SizedBox(height: 50),
+                        
                         SizedBox(
                           width: double.infinity,
                           height: 47,
@@ -103,30 +151,30 @@ class NewPassword extends StatelessWidget {
                             onPressed: isLoading
                                 ? null
                                 : () {
-                                    final token = tokenController.text.trim();
-                                    final password = passwordController.text.trim();
-                                    final confirmPassword = confirmPasswordController.text.trim();
+                                    if (!_isTokenFormatValid) {
+                                      _verifyTokenFormat();
+                                    } else {
+                                      final token = tokenController.text.trim();
+                                      final password = passwordController.text.trim();
+                                      final confirmPassword = confirmPasswordController.text.trim();
 
-                                    if (token.isEmpty) {
-                                      SnackbarService.showErrorSnackBar("برجاء إدخال رمز التحقق");
-                                      return;
-                                    }
-                                    if (password.isEmpty) {
-                                      SnackbarService.showErrorSnackBar("برجاء إدخال كلمة المرور الجديدة");
-                                      return;
-                                    }
-                                    if (password != confirmPassword) {
-                                      SnackbarService.showErrorSnackBar("كلمتا المرور غير متطابقتين");
-                                      return;
-                                    }
+                                      if (password.isEmpty) {
+                                        SnackbarService.showErrorSnackBar("برجاء إدخال كلمة المرور الجديدة");
+                                        return;
+                                      }
+                                      if (password != confirmPassword) {
+                                        SnackbarService.showErrorSnackBar("كلمتا المرور غير متطابقتين");
+                                        return;
+                                      }
 
-                                    context.read<AuthCubit>().resetPassword(
-                                          ResetPasswordCommand(
-                                            email: userEmail,
-                                            token: token,
-                                            newPassword: password,
-                                          ),
-                                        );
+                                      context.read<AuthCubit>().resetPassword(
+                                            ResetPasswordCommand(
+                                              email: widget.userEmail,
+                                              token: token,
+                                              newPassword: password,
+                                            ),
+                                          );
+                                    }
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
@@ -144,7 +192,10 @@ class NewPassword extends StatelessWidget {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text('حفظ', style: TextStyles.buttonText),
+                                : Text(
+                                    _isTokenFormatValid ? 'حفظ' : 'التحقق من الرمز',
+                                    style: TextStyles.buttonText,
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 20),

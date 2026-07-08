@@ -8,10 +8,7 @@ import 'package:rafiq/features/course%20mangement/presentation/widgets/schedule.
 class CourseExpandedSheet extends StatelessWidget {
   final CourseItemModel course;
 
-  const CourseExpandedSheet({
-    super.key,
-    required this.course,
-  });
+  const CourseExpandedSheet({super.key, required this.course});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +22,7 @@ class CourseExpandedSheet extends StatelessWidget {
               scheduleTime: course.scheduleTime,
               availableSeats: course.availableSeats,
               totalSeats: course.totalSeats,
+              registeredStudents: course.registeredStudents,
             ),
           ];
 
@@ -143,7 +141,9 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mainColor = isFull ? const Color(0xFFD32F2F) : const Color(0xFF1564BF);
+    final mainColor = isFull
+        ? const Color(0xFFD32F2F)
+        : const Color(0xFF1564BF);
     final bgColor = isFull ? Colors.white : const Color(0xFFE8F1FB);
     final borderColor = isFull ? Colors.grey.shade300 : Colors.transparent;
 
@@ -157,7 +157,9 @@ class SectionCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(12.w),
         decoration: BoxDecoration(
-          border: Border(left: BorderSide(color: mainColor, width: 4.w)),
+          border: Border(
+            left: BorderSide(color: mainColor, width: 4.w),
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +176,10 @@ class SectionCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: mainColor,
                     borderRadius: BorderRadius.circular(16.r),
@@ -183,7 +188,9 @@ class SectionCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        isFull ? Icons.cancel_outlined : Icons.check_circle_outline,
+                        isFull
+                            ? Icons.cancel_outlined
+                            : Icons.check_circle_outline,
                         color: Colors.white,
                         size: 14.sp,
                       ),
@@ -204,7 +211,10 @@ class SectionCard extends StatelessWidget {
             SizedBox(height: 12.h),
             Row(
               children: [
-                CircleAvatar(radius: 10.r, backgroundColor: Colors.grey.shade400),
+                CircleAvatar(
+                  radius: 10.r,
+                  backgroundColor: Colors.grey.shade400,
+                ),
                 SizedBox(width: 8.w),
                 Text(
                   taName,
@@ -219,12 +229,19 @@ class SectionCard extends StatelessWidget {
             SizedBox(height: 8.h),
             Row(
               children: [
-                Icon(Icons.access_time, size: 16.sp, color: Colors.blue.shade300),
+                Icon(
+                  Icons.access_time,
+                  size: 16.sp,
+                  color: Colors.blue.shade300,
+                ),
                 SizedBox(width: 6.w),
                 Text(
                   time,
                   textDirection: TextDirection.ltr,
-                  style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey.shade600,
+                  ),
                 ),
               ],
             ),

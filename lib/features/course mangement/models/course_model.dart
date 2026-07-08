@@ -7,6 +7,7 @@ class CourseSectionModel {
   final String scheduleTime;
   final int availableSeats;
   final int totalSeats;
+  final int registeredStudents;
 
   const CourseSectionModel({
     required this.id,
@@ -15,18 +16,32 @@ class CourseSectionModel {
     required this.scheduleTime,
     required this.availableSeats,
     required this.totalSeats,
+    required this.registeredStudents,
   });
 
   bool get isFull => totalSeats > 0 && availableSeats <= 0;
 
   String get seatsLabel {
-    if (isFull) return '0/$totalSeats مكتمل';
-    return '$availableSeats/$totalSeats مقعدا';
+    if (isFull) return '$totalSeats/$totalSeats مكتمل';
+    return '$registeredStudents/$totalSeats مقعدا';
   }
 
   factory CourseSectionModel.fromJson(Map<String, dynamic> json) {
     final total = readInt(json, ['totalSeats', 'capacity', 'maxSeats']);
     final available = readInt(json, ['availableSeats', 'remainingSeats', 'seatsAvailable'], total);
+    final registered = readInt(json, ['registeredStudents', 'enrolledStudentsCount', 'enrolled'], total - available);
+
+    // Debug logs
+    assert(() {
+      print('--- Course Section Debug ---');
+      print('Section: ${readString(json, ['sectionName', 'name', 'sectionCode'], 'Section')}');
+      print('Capacity: $total');
+      print('Available Seats: $available');
+      print('Registered Students: $registered');
+      print('Displayed Text: $registered/$total مقعدا');
+      print('----------------------------');
+      return true;
+    }());
 
     return CourseSectionModel(
       id: readString(json, ['id', 'sectionId']),
@@ -35,6 +50,7 @@ class CourseSectionModel {
       scheduleTime: readString(json, ['scheduleTime', 'time', 'schedule'], '—'),
       availableSeats: available,
       totalSeats: total,
+      registeredStudents: registered,
     );
   }
 }
@@ -50,6 +66,7 @@ class CourseItemModel {
   final String scheduleTime;
   final int availableSeats;
   final int totalSeats;
+  final int registeredStudents;
   final bool isRecommended;
   final List<CourseSectionModel> sections;
 
@@ -64,15 +81,29 @@ class CourseItemModel {
     required this.scheduleTime,
     required this.availableSeats,
     required this.totalSeats,
+    required this.registeredStudents,
     required this.isRecommended,
     required this.sections,
   });
 
-  String get seatsLabel => '$availableSeats/$totalSeats مقعدا';
+  String get seatsLabel => '$registeredStudents/$totalSeats مقعدا';
 
   factory CourseItemModel.fromJson(Map<String, dynamic> json) {
     final total = readInt(json, ['totalSeats', 'capacity', 'maxSeats'], 30);
     final available = readInt(json, ['availableSeats', 'remainingSeats', 'seatsAvailable'], total);
+    final registered = readInt(json, ['registeredStudents', 'enrolledStudentsCount', 'enrolled'], total - available);
+
+    // Debug logs
+    assert(() {
+      print('--- Course Debug ---');
+      print('Course: ${readString(json, ['courseTitle', 'title', 'name'])}');
+      print('Capacity: $total');
+      print('Available Seats: $available');
+      print('Registered Students: $registered');
+      print('Displayed Text: $registered/$total مقعدا');
+      print('--------------------');
+      return true;
+    }());
 
     return CourseItemModel(
       id: readString(json, ['id', 'courseId']),
@@ -85,6 +116,7 @@ class CourseItemModel {
       scheduleTime: readString(json, ['scheduleTime', 'schedule', 'timeSlot']),
       availableSeats: available,
       totalSeats: total,
+      registeredStudents: registered,
       isRecommended: readBool(json, ['isRecommended', 'recommended']),
       sections: readMapList(json, ['sections', 'courseSections'])
           .map(CourseSectionModel.fromJson)
