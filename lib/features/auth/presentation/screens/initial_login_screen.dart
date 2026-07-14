@@ -59,11 +59,7 @@ class _InitialLoginState extends State<InitialLogin> {
           backgroundColor: Colors.white,
           elevation: 0,
           automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new,
-                color: Colors.black, size: 20),
-            onPressed: () => Navigator.pop(context),
-          ),
+          leading: const BackButton(color: Colors.black),
         ),
         body: BlocListener<AuthCubit, AuthState>(
           listenWhen: (previous, current) =>
@@ -148,7 +144,7 @@ class _InitialLoginState extends State<InitialLogin> {
                       ),
                       const SizedBox(height: 28),
                       Align(
-                        alignment: Alignment.centerRight,
+                        alignment: AlignmentDirectional.centerEnd,
                         child: SizedBox(
                           width: 335,
                           child: Column(
@@ -162,7 +158,7 @@ class _InitialLoginState extends State<InitialLogin> {
                               const SizedBox(height: 10),
                               if (!isPasswordStep) ...[
                                 Padding(
-                                  padding: const EdgeInsets.only(right: 8),
+                                  padding: const EdgeInsetsDirectional.only(end: 8),
                                   child: Text(
                                       'سيتم ارسال كلمة المرور إلى بريدك الإلكترونى',
                                       style: TextStyles.loginsubtitle,

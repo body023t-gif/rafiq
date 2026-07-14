@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:rafiq/core/network/api_service.dart';
 
 class CourseRemoteDataSource {
@@ -20,17 +22,17 @@ class CourseRemoteDataSource {
     );
 
     // TEMPORARY DEBUG LOGGING FOR COURSE REGISTRATION AUDIT
-    print('\n====== GET COURSES RAW JSON START ======');
+    log('\n====== GET COURSES RAW JSON START ======');
     for (var course in response) {
-      print('Course JSON: $course');
+      log('Course JSON: $course');
       final sections = course['sections'] ?? course['courseSections'] ?? [];
       if (sections is List) {
         for (var section in sections) {
-          print('  Section JSON: $section');
+          log('  Section JSON: $section');
         }
       }
     }
-    print('====== GET COURSES RAW JSON END ======\n');
+    log('====== GET COURSES RAW JSON END ======\n');
 
     return response;
   }
@@ -39,22 +41,30 @@ class CourseRemoteDataSource {
     return apiService.get('/v1/api/courses/$courseId');
   }
 
-  Future<Map<String, dynamic>> enrollCourse(String courseId, String sectionId) {
+  Future<Map<String, dynamic>> enrollCourse(
+    String courseId,
+    String lectureGroupId,
+    String sectionId,
+  ) {
+    final body = {
+      'courseId': courseId,
+      'lectureGroupId': lectureGroupId,
+      'sectionId': sectionId,
+    };
+    log('====== ENROLL COURSE DEBUG ======');
+    log('selected lectureGroupId: $lectureGroupId, sectionId: $sectionId');
+    log('request body before POST: $body');
+    log('=================================');
     return apiService.post(
       '/v1/api/courses/enroll',
-      body: {
-        'courseId': courseId,
-        'lectureGroupId': sectionId, // Map sectionId to backend-expected lectureGroupId
-      },
+      body: body,
     );
   }
 
   Future<Map<String, dynamic>> dropCourse(String courseId) {
     return apiService.post(
       '/v1/api/courses/drop',
-      body: {
-        'courseId': courseId,
-      },
+      body: {'courseId': courseId},
     );
   }
 

@@ -31,7 +31,7 @@ class MicButton extends StatelessWidget {
       child: Container(
         width: 36.w,
         height: 36.w,
-        margin: EdgeInsets.only(right: 6.w),
+        margin: EdgeInsetsDirectional.only(end: 6.w),
         decoration: BoxDecoration(
           color: isListening ? Colors.red.withValues(alpha:0.1) : Colors.transparent,
           shape: BoxShape.circle,
@@ -203,9 +203,11 @@ class _ChatAIViewState extends State<ChatAIView> {
     if (!_isListening) {
       if (mounted) setState(() => _isListening = true);
       await _speech.listen(
-        localeId: 'ar_EG',
-        listenFor: const Duration(seconds: 30),
-        pauseFor: const Duration(seconds: 3),
+        listenOptions: stt.SpeechListenOptions(
+          localeId: 'ar_EG',
+          listenFor: const Duration(seconds: 30),
+          pauseFor: const Duration(seconds: 3),
+        ),
         onResult: (result) {
           if (mounted) {
             setState(() {
@@ -540,7 +542,7 @@ class _ChatAIViewState extends State<ChatAIView> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.only(left: 12.w),
+                      padding: EdgeInsetsDirectional.only(start: 12.w),
                       child: Icon(Icons.attach_file_rounded, color: Colors.grey.shade600, size: 22.sp),
                     ),
                   ),

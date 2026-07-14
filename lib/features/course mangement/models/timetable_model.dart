@@ -70,10 +70,13 @@ class SaveTimetableRequestModel {
   });
 
   Map<String, dynamic> toJson() {
-    return {
+    final map = <String, dynamic>{
+      'id': null,
       'studentId': studentId,
-      'timetableName': 'جدول دراسي مقترح',
+      'timetableName': 'My Timetable',
       'timetableData': timetableData,
     };
+
+    return map;
   }
 }

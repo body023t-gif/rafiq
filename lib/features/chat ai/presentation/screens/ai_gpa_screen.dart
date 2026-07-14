@@ -65,9 +65,9 @@ class _GpaCalculatorScreenState extends State<GpaScreen> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         title: const Padding(
-          padding: EdgeInsets.only(right: 20),
+          padding: EdgeInsetsDirectional.only(end: 20),
           child: Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(
               "حاسبة المعدل",
               style: TextStyle(
@@ -95,10 +95,9 @@ class _GpaCalculatorScreenState extends State<GpaScreen> {
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                color: Colors.white,
-                size: 16,
+              icon: const IconTheme(
+                data: IconThemeData(color: Colors.white, size: 16),
+                child: BackButtonIcon(),
               ),
               onPressed: () {
                 Navigator.pop(context);

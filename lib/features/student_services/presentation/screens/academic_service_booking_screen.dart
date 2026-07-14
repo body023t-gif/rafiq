@@ -143,14 +143,14 @@ class _AcademicServiceBookingScreenState extends State<AcademicServiceBookingScr
     } else if (_selectedCategory == StudentServiceCategory.inquiry) {
       log('[Booking] Calling Cubit.sendGuidanceRequest...');
       _bookingCubit.sendGuidanceRequest(
-        studentId: studentId ?? "",
+        studentId: studentId,
         title: serviceTitle,
         description: reasonText,
       );
     } else if (_selectedCategory == StudentServiceCategory.document) {
       log('[Booking] Calling Cubit.requestDocument...');
       _bookingCubit.requestDocument(
-        studentId: studentId ?? "",
+        studentId: studentId,
         documentType: _selectedDocumentType,
         remarks: reasonText,
         topic: serviceTitle,
@@ -224,7 +224,7 @@ class _AcademicServiceBookingScreenState extends State<AcademicServiceBookingScr
                                         decoration: const BoxDecoration(
                                           border: Border(right: BorderSide(color: Color(0xFF1D63B5), width: 4)),
                                         ),
-                                        padding: EdgeInsets.only(right: 8.w),
+                                        padding: EdgeInsetsDirectional.only(end: 8.w),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -312,12 +312,12 @@ class _AcademicServiceBookingScreenState extends State<AcademicServiceBookingScr
                                       Text("ماذا تريد أن تفعل؟", style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade500)),
                                       SizedBox(height: 8.h),
                                       DropdownButtonFormField<StudentServiceCategory>(
-                                        value: _selectedCategory,
+                                        initialValue: _selectedCategory,
                                         items: _serviceCategories.map((type) {
                                           return DropdownMenuItem(
                                             value: type,
                                             child: Align(
-                                              alignment: Alignment.centerRight,
+                                              alignment: AlignmentDirectional.centerEnd,
                                               child: Text(type.arabicTitle),
                                             ),
                                           );
@@ -343,12 +343,12 @@ class _AcademicServiceBookingScreenState extends State<AcademicServiceBookingScr
                                         Text("نوع الوثيقة المطلوبة", style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: const Color(0xFF1E293B))),
                                         SizedBox(height: 6.h),
                                         DropdownButtonFormField<String>(
-                                          value: _selectedDocumentType,
+                                          initialValue: _selectedDocumentType,
                                           items: _documentTypes.map((type) {
                                             return DropdownMenuItem(
                                               value: type,
                                               child: Align(
-                                                alignment: Alignment.centerRight,
+                                                alignment: AlignmentDirectional.centerEnd,
                                                 child: Text(type),
                                               ),
                                             );
@@ -500,7 +500,7 @@ class _AcademicServiceBookingScreenState extends State<AcademicServiceBookingScr
                       ),
                     if (isActionLoading)
                       Container(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         child: const Center(child: CircularProgressIndicator()),
                       ),
                   ],

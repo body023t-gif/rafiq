@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafiq/core/error/api_exception.dart';
 import 'package:rafiq/features/chat%20ai/models/chat_model.dart';
@@ -16,6 +17,21 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> initialize() async {
     emit(const ChatLoading());
+    
+    if (kDebugMode) {
+      _messages = [];
+      _sessions = [];
+      _activeSessionId = null;
+      emit(
+        ChatLoaded(
+          messages: _messages,
+          sessions: _sessions,
+          activeSessionId: _activeSessionId,
+        ),
+      );
+      return;
+    }
+
     try {
       _sessions = await repository.getSessions();
       _activeSessionId = _sessions.isNotEmpty ? _sessions.first.id : null;
@@ -46,6 +62,20 @@ class ChatCubit extends Cubit<ChatState> {
 
   Future<void> loadHistory({String? sessionId}) async {
     emit(const ChatLoading());
+
+    if (kDebugMode) {
+      _activeSessionId = sessionId;
+      _messages = [];
+      emit(
+        ChatLoaded(
+          messages: _messages,
+          sessions: _sessions,
+          activeSessionId: _activeSessionId,
+        ),
+      );
+      return;
+    }
+
     try {
       _activeSessionId = sessionId;
       _messages = await repository.getHistory(sessionId: sessionId);

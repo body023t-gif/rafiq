@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer' as dev;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rafiq/core/logic/helper_method.dart';
@@ -32,28 +31,50 @@ class SessionManager {
     accessToken = response.token;
     refreshToken = response.refreshToken;
     userId = response.id;
-    
+
     _parseAndSetExpiration(response.expiresIn);
 
     final prefs = await SharedPreferences.getInstance();
-    if (accessToken != null) await prefs.setString('access_token', accessToken!);
-    if (refreshToken != null) await prefs.setString('refresh_token', refreshToken!);
-    if (expirationTime != null) await prefs.setString('expiration_time', expirationTime!.toIso8601String());
-    if (userId != null) await prefs.setString('user_id', userId!);
+    if (accessToken != null) {
+      await prefs.setString('access_token', accessToken!);
+    }
+    if (refreshToken != null) {
+      await prefs.setString('refresh_token', refreshToken!);
+    }
+    if (expirationTime != null) {
+      await prefs.setString(
+        'expiration_time',
+        expirationTime!.toIso8601String(),
+      );
+    }
+    if (userId != null) {
+      await prefs.setString('user_id', userId!);
+    }
   }
 
-  Future<void> updateTokens(String newAccess, String? newRefresh, dynamic expiresIn) async {
+  Future<void> updateTokens(
+    String newAccess,
+    String? newRefresh,
+    dynamic expiresIn,
+  ) async {
     accessToken = newAccess;
     if (newRefresh != null && newRefresh.isNotEmpty) {
       refreshToken = newRefresh;
     }
-    
+
     _parseAndSetExpiration(expiresIn);
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', accessToken!);
-    if (refreshToken != null) await prefs.setString('refresh_token', refreshToken!);
-    if (expirationTime != null) await prefs.setString('expiration_time', expirationTime!.toIso8601String());
+    if (refreshToken != null) {
+      await prefs.setString('refresh_token', refreshToken!);
+    }
+    if (expirationTime != null) {
+      await prefs.setString(
+        'expiration_time',
+        expirationTime!.toIso8601String(),
+      );
+    }
   }
 
   void _parseAndSetExpiration(dynamic expiresIn) {
@@ -72,12 +93,14 @@ class SessionManager {
   bool get isTokenExpired {
     if (expirationTime == null) return false;
     // Add a small buffer of 1 minute to refresh proactively
-    return DateTime.now().isAfter(expirationTime!.subtract(const Duration(minutes: 1)));
+    return DateTime.now().isAfter(
+      expirationTime!.subtract(const Duration(minutes: 1)),
+    );
   }
 
   Future<void> logout() async {
     dev.log('[SessionManager] Executing full session logout.');
-    
+
     accessToken = null;
     refreshToken = null;
     expirationTime = null;
@@ -85,14 +108,14 @@ class SessionManager {
     studentId = null;
 
     final prefs = await SharedPreferences.getInstance();
-    
+
     // Clear session data
     await prefs.remove('access_token');
     await prefs.remove('refresh_token');
     await prefs.remove('expiration_time');
     await prefs.remove('user_id');
     await prefs.remove('student_id');
-    
+
     // Preserve Remember Me credentials if enabled
     final bool rememberMe = prefs.getBool('remember_me') ?? false;
     if (!rememberMe) {
@@ -100,7 +123,7 @@ class SessionManager {
       await prefs.remove('remember_email');
       await prefs.remove('remember_password');
     }
-    
+
     goTo(const InitialLogin(), canPop: false);
   }
 }

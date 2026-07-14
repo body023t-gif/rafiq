@@ -17,9 +17,11 @@ class CourseExpandedSheet extends StatelessWidget {
         : [
             CourseSectionModel(
               id: course.id,
+              sectionId: course.id,
               sectionName: 'Section A1',
               instructorName: course.instructorName,
               scheduleTime: course.scheduleTime,
+              location: '—',
               availableSeats: course.availableSeats,
               totalSeats: course.totalSeats,
               registeredStudents: course.registeredStudents,

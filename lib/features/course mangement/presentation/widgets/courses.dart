@@ -14,11 +14,110 @@ import 'package:rafiq/features/course%20mangement/presentation/cubit/schedule_cu
 import 'package:rafiq/features/course%20mangement/presentation/cubit/schedule_state.dart';
 import 'package:rafiq/features/course%20mangement/presentation/cubit/timetable_cubit.dart';
 import 'package:rafiq/features/course%20mangement/presentation/cubit/timetable_state.dart';
-import 'package:rafiq/features/course%20mangement/presentation/widgets/courseexpandedsheet.dart';
 import 'package:rafiq/features/course%20mangement/presentation/widgets/regenerateschedule.dart';
 import 'package:rafiq/features/course%20mangement/repository/course_repository.dart';
 import 'package:rafiq/features/course%20mangement/repository/schedule_repository.dart';
 import 'package:rafiq/features/course%20mangement/repository/timetable_repository.dart';
+import 'package:rafiq/features/course%20mangement/presentation/widgets/schedule.dart';
+import 'package:rafiq/features/course%20mangement/models/saved_timetable_model.dart';
+
+void _showSavedTimetablesSheet(List<SavedTimetableModel> timetables, BuildContext context, TimetableCubit timetableCubit) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (sheetContext) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          constraints: BoxConstraints(maxHeight: 500.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "الجداول المحفوظة",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: timetables.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  itemBuilder: (context, index) {
+                    final t = timetables[index];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        timetableCubit.selectSavedTimetable(t);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Schedule()),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              t.timetableName.isNotEmpty ? t.timetableName : "جدول #${index + 1}",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Wrap(
+                              spacing: 12.w,
+                              runSpacing: 8.h,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.calendar_today, size: 14.sp, color: Colors.grey.shade600),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      "${t.totalDays} أيام",
+                                      style: TextStyle(color: Colors.grey.shade700, fontSize: 12.sp),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.settings_suggest, size: 14.sp, color: Colors.grey.shade600),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      t.optionName,
+                                      style: TextStyle(color: Colors.grey.shade700, fontSize: 12.sp),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
 class CoursesView extends StatefulWidget {
   const CoursesView({super.key});
@@ -72,12 +171,21 @@ class _CoursesViewState extends State<CoursesView> {
             listener: (context, state) {
               if (state is CourseActionSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("تم تنفيذ العملية بنجاح.", style: TextStyle(fontFamily: 'Cairo')),
+                  SnackBar(
+                    content: Text(
+                      state.message,
+                      style: const TextStyle(fontFamily: 'Cairo'),
+                    ),
                     backgroundColor: Colors.green,
                   ),
                 );
+                _courseCubit.loadCourses(refresh: true);
                 _scheduleCubit.loadSchedule();
+                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Schedule()),
+                );
               } else if (state is CourseError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -85,6 +193,15 @@ class _CoursesViewState extends State<CoursesView> {
                     backgroundColor: Colors.red,
                   ),
                 );
+              }
+            },
+          ),
+          BlocListener<TimetableCubit, TimetableState>(
+            listener: (context, state) {
+              if (state is TimetableGenerated || state is TimetableSaved) {
+                _timetableCubit.loadSavedTimetables();
+              } else if (state is SavedTimetableListLoaded) {
+                _showSavedTimetablesSheet(state.timetables, context, _timetableCubit);
               }
             },
           ),
@@ -355,7 +472,7 @@ class _CoursesViewState extends State<CoursesView> {
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
-                        "مسجل",
+                        entry.status.isNotEmpty ? entry.status : "مسجل",
                         style: TextStyle(
                           color: const Color(0xFF166534),
                           fontSize: 10.sp,
@@ -383,38 +500,26 @@ class _CoursesViewState extends State<CoursesView> {
                   ),
                 ),
                 SizedBox(height: 4.h),
-                Text(
-                  "د. ${entry.instructorName} • ${entry.startTime.isNotEmpty ? entry.startTime : '—'}",
-                  style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade400),
-                ),
-                SizedBox(height: 12.h),
-                const Divider(color: Color(0xFFF1F5F9)),
-                SizedBox(height: 8.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.menu_book, color: Colors.grey, size: 16.sp),
-                        SizedBox(width: 4.w),
-                        Text(
-                          "${entry.creditHours} ساعات",
-                          style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.class_outlined, color: Colors.grey, size: 16.sp),
-                        SizedBox(width: 4.w),
-                        Text(
-                          entry.sectionName.isNotEmpty ? entry.sectionName : "شعبة 1",
-                          style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
-                        ),
-                      ],
-                    ),
-                  ],
-                )
+                if (entry.day.isNotEmpty || entry.startTime.isNotEmpty)
+                  Text(
+                    [entry.day, entry.startTime].where((e) => e.isNotEmpty).join(' • '),
+                    style: TextStyle(fontSize: 11.sp, color: Colors.grey.shade400),
+                  ),
+                if (entry.location.isNotEmpty) ...[
+                  SizedBox(height: 12.h),
+                  const Divider(color: Color(0xFFF1F5F9)),
+                  SizedBox(height: 8.h),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on_outlined, color: Colors.grey, size: 16.sp),
+                      SizedBox(width: 4.w),
+                      Text(
+                        entry.location,
+                        style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                ]
               ],
             ),
           );
@@ -519,6 +624,63 @@ class _CoursesViewState extends State<CoursesView> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 46.h,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF1E6FD9),
+                              side: const BorderSide(color: Color(0xFF1E6FD9)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const Schedule()),
+                              );
+                            },
+                            icon: Icon(Icons.schedule, size: 16.sp),
+                            label: Text(
+                              "الجدول الحالي",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: SizedBox(
+                          height: 46.h,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF1E6FD9),
+                              side: const BorderSide(color: Color(0xFF1E6FD9)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                            ),
+                            onPressed: () => _timetableCubit.loadSavedTimetables(),
+                            icon: Icon(Icons.bookmark_border, size: 16.sp),
+                            label: Text(
+                              "الجداول المحفوظة",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             );
@@ -596,10 +758,7 @@ class _CoursesViewState extends State<CoursesView> {
                       children: [
                         Icon(Icons.people_outline, color: Colors.grey, size: 16.sp),
                         SizedBox(width: 4.w),
-                        Text(
-                          course.seatsLabel,
-                          style: TextStyle(fontSize: 12.sp, color: const Color(0xFF166534), fontWeight: FontWeight.bold),
-                        ),
+                        _CourseSeatsLabel(course: course, courseCubit: _courseCubit),
                       ],
                     ),
                   ],
@@ -617,12 +776,49 @@ class _CoursesViewState extends State<CoursesView> {
                     ),
                     onPressed: isLoading
                         ? null
-                        : () {
+                        : () async {
+                            List<LectureGroupModel> lgList = course.lectureGroups;
+                            List<CourseSectionModel> secList = course.sections;
+                            
+                            if (lgList.isEmpty || secList.isEmpty) {
+                              final fullCourse = await _courseCubit.getCourseById(course.id);
+                              if (fullCourse != null) {
+                                lgList = fullCourse.lectureGroups;
+                                secList = fullCourse.sections;
+                              }
+                            }
+
+                            debugPrint('DEBUG: course.lectureGroups.length before open: ${lgList.length}');
+
+                            if (!context.mounted) return;
+
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
-                              builder: (context) => CourseExpandedSheet(course: course),
+                              builder: (sheetContext) => LectureGroupSelectionSheet(
+                                course: course,
+                                groups: lgList,
+                                onSelect: (selectedGroup) {
+                                  if (!context.mounted) return;
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (secSheetContext) => SectionSelectionSheet(
+                                      course: course,
+                                      sections: secList,
+                                      onSelect: (selectedSection) {
+                                        _courseCubit.enrollCourse(
+                                          course.id,
+                                          selectedGroup.id,
+                                          selectedSection.sectionId,
+                                        );
+                                      },
+                                    ),
+                                  ).then((_) => _scheduleCubit.loadSchedule());
+                                },
+                              ),
                             ).then((_) => _scheduleCubit.loadSchedule());
                           },
                     child: Text(
@@ -635,6 +831,330 @@ class _CoursesViewState extends State<CoursesView> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class LectureGroupSelectionSheet extends StatelessWidget {
+  final CourseItemModel course;
+  final List<LectureGroupModel> groups;
+  final void Function(LectureGroupModel selected) onSelect;
+
+  const LectureGroupSelectionSheet({
+    super.key,
+    required this.course,
+    required this.groups,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            "اختر مجموعة المحاضرة",
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16.h),
+          if (groups.isEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 32.h),
+              child: Center(
+                child: Text(
+                  "لا توجد مجموعات محاضرات متاحة.",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
+            )
+          else
+            ...groups.map((group) {
+            return InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                onSelect(group);
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 12.h),
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "د. ${group.doctorName}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        Text(
+                          group.seatsLabel,
+                          style: TextStyle(
+                            color: group.isFull ? Colors.red : Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    Row(
+                      children: [
+                        Icon(Icons.person, size: 16.sp, color: Colors.grey),
+                        SizedBox(width: 4.w),
+                        Text(
+                          group.location,
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          size: 16.sp,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "${group.day} - ${group.time}",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
+    );
+  }
+}
+
+class SectionSelectionSheet extends StatelessWidget {
+  final CourseItemModel course;
+  final List<CourseSectionModel> sections;
+  final void Function(CourseSectionModel selected) onSelect;
+
+  const SectionSelectionSheet({
+    super.key,
+    required this.course,
+    required this.sections,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade400,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            "اختر الشعبة",
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16.h),
+          if (sections.isEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 32.h),
+              child: Center(
+                child: Text(
+                  "لا توجد شعب متاحة.",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+              ),
+            )
+          else
+            ...sections.map((section) {
+            return InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                onSelect(section);
+              },
+              child: Container(
+                margin: EdgeInsets.only(bottom: 12.h),
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          section.sectionName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        Text(
+                          section.seatsLabel,
+                          style: TextStyle(
+                            color: section.isFull ? Colors.red : Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (section.scheduleTime.isNotEmpty) ...[
+                      SizedBox(height: 8.h),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            size: 16.sp,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            section.scheduleTime,
+                            textDirection: TextDirection.rtl,
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }),
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
+        ],
+      ),
+    );
+  }
+}
+
+class _CourseSeatsLabel extends StatefulWidget {
+  final CourseItemModel course;
+  final CourseCubit courseCubit;
+
+  const _CourseSeatsLabel({required this.course, required this.courseCubit});
+
+  @override
+  State<_CourseSeatsLabel> createState() => _CourseSeatsLabelState();
+}
+
+class _CourseSeatsLabelState extends State<_CourseSeatsLabel> {
+  String _seatsLabel = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _seatsLabel = widget.course.seatsLabel;
+    _calculateSeats();
+  }
+
+  Future<void> _calculateSeats() async {
+    List<LectureGroupModel> groups = widget.course.lectureGroups;
+
+    if (groups.isEmpty) {
+      final fullCourse = await widget.courseCubit.getCourseById(
+        widget.course.id,
+      );
+      if (fullCourse != null) {
+        groups = fullCourse.lectureGroups;
+      }
+    }
+
+    if (groups.isNotEmpty) {
+      int totalCap = 0;
+      int totalReg = 0;
+
+      for (var lg in groups) {
+        int cap = lg.capacity;
+        int avail = lg.availableSeats;
+        int reg = lg.enrolledStudentsCount;
+
+        if (reg == 0 && cap > 0 && avail >= 0) {
+          reg = cap - avail;
+        }
+
+        totalCap += cap;
+        totalReg += reg;
+      }
+
+      final newLabel = "$totalReg / $totalCap";
+
+      if (mounted) {
+        setState(() {
+          _seatsLabel = newLabel;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _seatsLabel,
+      textDirection: TextDirection.ltr,
+      style: TextStyle(
+        fontSize: 12.sp,
+        color: const Color(0xFF166534),
+        fontWeight: FontWeight.bold,
       ),
     );
   }

@@ -94,13 +94,28 @@ class CourseCubit extends Cubit<CourseState> {
     );
   }
 
-  Future<void> enrollCourse(String courseId, String sectionId) async {
+  Future<CourseItemModel?> getCourseById(String courseId) async {
+    try {
+      return await repository.getCourseById(courseId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> enrollCourse(String courseId, String lectureGroupId, String sectionId) async {
+    if (state is CourseActionLoading) return; // Prevent duplicate requests
     emit(CourseActionLoading(courses: _courses, action: 'enroll'));
     try {
-      await repository.enrollCourse(courseId, sectionId);
-      await loadCourses(refresh: true);
+      await repository.enrollCourse(courseId, lectureGroupId, sectionId);
+      // Success is handled by CourseActionSuccess
+      emit(CourseActionSuccess(courses: _courses, message: 'تم التسجيل بنجاح'));
+      // Note: we don't automatically loadCourses here so we don't overwrite success message, UI will trigger reload
     } on ApiException catch (e) {
-      emit(CourseError(e.message, previousCourses: _courses));
+      if (e.message.contains('أنت مسجل بالفعل')) {
+        emit(CourseActionSuccess(courses: _courses, message: e.message));
+      } else {
+        emit(CourseError(e.message, previousCourses: _courses));
+      }
     } catch (_) {
       emit(CourseError('Failed to enroll in course.', previousCourses: _courses));
     }

@@ -16,4 +16,12 @@ class TimetableRemoteDataSource {
   Future<Map<String, dynamic>> getCourseDetails(String courseId) {
     return apiService.get('/v1/api/courses/$courseId');
   }
+
+  Future<Map<String, dynamic>> getStudentSchedule() {
+    return apiService.get('/v1/api/students/schedule');
+  }
+
+  Future<List<dynamic>> getSavedTimetables(String studentId) {
+    return apiService.getList('/v1/api/ai/timetable/student/$studentId');
+  }
 }

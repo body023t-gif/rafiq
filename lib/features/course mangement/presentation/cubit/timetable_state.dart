@@ -1,6 +1,8 @@
 import 'package:rafiq/features/course%20mangement/models/schedule_model.dart';
 import 'package:rafiq/features/course%20mangement/models/timetable_model.dart';
 
+import 'package:rafiq/features/course%20mangement/models/saved_timetable_model.dart';
+
 sealed class TimetableState {
   const TimetableState();
 }
@@ -35,6 +37,22 @@ class TimetableSaved extends TimetableState {
   });
 }
 
+class SavedTimetablesLoading extends TimetableState {
+  const SavedTimetablesLoading();
+}
+
+class SavedTimetableListLoaded extends TimetableState {
+  final List<SavedTimetableModel> timetables;
+
+  const SavedTimetableListLoaded(this.timetables);
+}
+
+class SavedTimetableLoaded extends TimetableState {
+  final SavedTimetableModel timetable;
+
+  const SavedTimetableLoaded(this.timetable);
+}
+
 class TimetableError extends TimetableState {
   final String message;
   final TimetableModel? previousTimetable;
@@ -53,15 +71,19 @@ TimetableModel? readTimetable(TimetableState state) {
 }
 
 StudentScheduleModel? timetableAsSchedule(TimetableState state) {
+  if (state is SavedTimetableLoaded) {
+    return state.timetable.toStudentScheduleModel();
+  }
   return readTimetable(state)?.toScheduleModel();
 }
 
 bool isTimetableBusy(TimetableState state) {
-  return state is TimetableGenerating || state is TimetableSaving;
+  return state is TimetableGenerating || state is TimetableSaving || state is SavedTimetablesLoading;
 }
 
 bool hasGeneratedTimetable(TimetableState state) {
   if (state is TimetableGenerated) return true;
+  if (state is SavedTimetableLoaded) return true;
   if (state is TimetableError && state.previousTimetable?.rawJson != null) {
     return true;
   }
@@ -70,5 +92,6 @@ bool hasGeneratedTimetable(TimetableState state) {
 
 bool canSaveTimetable(TimetableState state) {
   if (isTimetableBusy(state)) return false;
+  if (state is SavedTimetableLoaded) return false;
   return hasGeneratedTimetable(state);
 }

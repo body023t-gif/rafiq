@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rafiq/data/api/api_service.dart';
@@ -62,14 +61,19 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.delayed(const Duration(seconds: 5), () {
       log("--- STARTING TIMETABLE GENERATION STARTUP TRACE ---");
       final repo = TimetableRepository(TimetableRemoteDataSource(apiService));
-      repo.generateTimetable(TimetableRequestModel(
-        strategy: TimetableStrategy.compact,
-        courseIds: ['ebfc8dba-f785-41d1-b8c5-16caa90ea982'],
-      )).then((res) {
-        log("Startup trace generation success: $res");
-      }).catchError((e) {
-        log("Startup trace generation error: $e");
-      });
+      repo
+          .generateTimetable(
+            TimetableRequestModel(
+              strategy: TimetableStrategy.compact,
+              courseIds: ['ebfc8dba-f785-41d1-b8c5-16caa90ea982'],
+            ),
+          )
+          .then((res) {
+            log("Startup trace generation success: $res");
+          })
+          .catchError((e) {
+            log("Startup trace generation error: $e");
+          });
     });
   }
 
@@ -102,12 +106,14 @@ class _HomeScreenState extends State<HomeScreen> {
             return BlocBuilder<ScheduleCubit, ScheduleState>(
               builder: (context, scheduleState) {
                 // 1. Loading State
-                if (profileState is ProfileLoading || scheduleState is ScheduleLoading) {
+                if (profileState is ProfileLoading ||
+                    scheduleState is ScheduleLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
                 // 2. Error State
-                if (profileState is ProfileError || scheduleState is ScheduleError) {
+                if (profileState is ProfileError ||
+                    scheduleState is ScheduleError) {
                   final String errorMsg;
                   if (profileState is ProfileError) {
                     errorMsg = profileState.message;
@@ -122,23 +128,35 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.error_outline_rounded, color: Colors.red, size: 48.sp),
+                          Icon(
+                            Icons.error_outline_rounded,
+                            color: Colors.red,
+                            size: 48.sp,
+                          ),
                           const SizedBox(height: 16),
                           Text(
                             errorMsg,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontFamily: 'IBMPlexSansArabic', fontSize: 14),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexSansArabic',
+                              fontSize: 14,
+                            ),
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1E61BD),
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             onPressed: _retry,
                             icon: const Icon(Icons.refresh),
-                            label: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'IBMPlexSansArabic')),
+                            label: const Text(
+                              'إعادة المحاولة',
+                              style: TextStyle(fontFamily: 'IBMPlexSansArabic'),
+                            ),
                           ),
                         ],
                       ),
@@ -163,38 +181,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
 
                 if (scheduleState is ScheduleLoaded) {
-                  registeredCountVal = scheduleState.schedule.registeredCoursesCount.toString();
+                  registeredCountVal = scheduleState
+                      .schedule
+                      .registeredCoursesCount
+                      .toString();
                 } else if (scheduleState is ScheduleEmpty) {
                   registeredCountVal = "0";
                 }
 
-                return Stack(children: [
-                  SafeArea(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          _HeaderSection(
-                            studentName: studentName,
-                            gpa: gpaVal,
-                            registeredCourses: registeredCountVal,
-                            profilePicUrl: profilePicUrl,
-                          ),
-                          const SizedBox(height: 10),
-                          const _ServicesGrid(),
-                          const SizedBox(height: 20),
-                          const _ChatBanner(),
-                          const SizedBox(height: 20),
-                          const _EventsSection(),
-                          const SizedBox(height: 20),
-                          const _MapSection(),
-                          const SizedBox(height: 120),
-                        ],
+                return Stack(
+                  children: [
+                    SafeArea(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            _HeaderSection(
+                              studentName: studentName,
+                              gpa: gpaVal,
+                              registeredCourses: registeredCountVal,
+                              profilePicUrl: profilePicUrl,
+                            ),
+                            const SizedBox(height: 10),
+                            const _ServicesGrid(),
+                            const SizedBox(height: 20),
+                            const _ChatBanner(),
+                            const SizedBox(height: 20),
+                            const _EventsSection(),
+                            const SizedBox(height: 20),
+                            const _MapSection(),
+                            const SizedBox(height: 120),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const _FloatingBottomNav(),
-                ]);
+                    const _FloatingBottomNav(),
+                  ],
+                );
               },
             );
           },
@@ -220,40 +243,73 @@ class _HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            color: const Color(0xFF1E61BD),
-            borderRadius: BorderRadius.circular(28)),
-        child: Column(children: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Icon(Icons.notifications_none, color: Colors.white, size: 26),
-            Row(children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                const Text("مرحباً بك", style: TextStyle(color: Colors.white70, fontSize: 12, fontFamily: 'IBMPlexSansArabic')),
-                Text(studentName,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        fontFamily: 'IBMPlexSansArabic'))
-              ]),
-              const SizedBox(width: 12),
-              CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.white24,
-                backgroundImage: profilePicUrl != null ? NetworkImage(profilePicUrl!) : null,
-                child: profilePicUrl == null ? const Icon(Icons.person, color: Colors.white) : null,
-              )
-            ])
-          ]),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E61BD),
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Icon(
+                Icons.notifications_none,
+                color: Colors.white,
+                size: 26,
+              ),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Text(
+                        "مرحباً بك",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          fontFamily: 'IBMPlexSansArabic',
+                        ),
+                      ),
+                      Text(
+                        studentName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          fontFamily: 'IBMPlexSansArabic',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: Colors.white24,
+                    backgroundImage: profilePicUrl != null
+                        ? NetworkImage(profilePicUrl!)
+                        : null,
+                    child: profilePicUrl == null
+                        ? const Icon(Icons.person, color: Colors.white)
+                        : null,
+                  ),
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            _StatItem(gpa, "GPA"),
-            const _VerticalDivider(),
-            _StatItem(registeredCourses, "مقررات")
-          ])
-        ]));
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _StatItem(gpa, "GPA"),
+              const _VerticalDivider(),
+              _StatItem(registeredCourses, "مقررات"),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -262,68 +318,68 @@ class _ServicesGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
-            childAspectRatio: 1.16,
-            children: [
-              _ServiceCard(
-                icon: Icons.dashboard_rounded,
-                title: "لوحة التحكم",
-                sub: "اتطلع على تقدمك الأكاديمي",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DashboardScreen(userId: ApiService.dynamicUserId ?? ApiService.staticUserId),
-                    ),
-                  );
-                },
-              ),
-              _ServiceCard(
-                icon: Icons.menu_book_rounded,
-                title: "إدارة المقررات",
-                sub: "اتطلع المقررات المتاحة لديك",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CoursesView(),
-                    ),
-                  );
-                },
-              ),
-              _ServiceCard(
-                icon: Icons.groups_rounded,
-                title: "الخدمات الطلابيه",
-                sub: "اكتشف الخدمات المتاحة لديك",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const StudentServicesScreen(),
-                    ),
-                  );
-                },
-              ),
-              _ServiceCard(
-                icon: Icons.account_circle_rounded,
-                title: "الملف الشخصي",
-                sub: "إدارة بياناتك الشخصية",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfileScreen(),
-                    ),
-                  );
-                },
-              ),
-            ]));
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 1.16,
+        children: [
+          _ServiceCard(
+            icon: Icons.dashboard_rounded,
+            title: "لوحة التحكم",
+            sub: "اتطلع على تقدمك الأكاديمي",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashboardScreen(
+                    userId: ApiService.dynamicUserId ?? ApiService.staticUserId,
+                  ),
+                ),
+              );
+            },
+          ),
+          _ServiceCard(
+            icon: Icons.menu_book_rounded,
+            title: "إدارة المقررات",
+            sub: "اتطلع المقررات المتاحة لديك",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CoursesView()),
+              );
+            },
+          ),
+          _ServiceCard(
+            icon: Icons.groups_rounded,
+            title: "الخدمات الطلابيه",
+            sub: "اكتشف الخدمات المتاحة لديك",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StudentServicesScreen(),
+                ),
+              );
+            },
+          ),
+          _ServiceCard(
+            icon: Icons.account_circle_rounded,
+            title: "الملف الشخصي",
+            sub: "إدارة بياناتك الشخصية",
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -332,34 +388,59 @@ class _ChatBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          final profileCubit = BlocProvider.of<ProfileCubit>(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => BlocProvider.value(
-                  value: profileCubit,
-                  child: const ChatHomeScreen())));
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-            decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                    colors: [Color(0xFF3A8DFF), Color(0xFF1E61BD)]),
-                borderRadius: BorderRadius.circular(16)),
-            child: const Row(children: [
-              Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 16),
-              Spacer(),
-              Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Text("رفيق الشات الذكي",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'IBMPlexSansArabic')),
-                Text("اسأل عن شئ",
-                    style: TextStyle(color: Colors.white70, fontSize: 11, fontFamily: 'IBMPlexSansArabic'))
-              ]),
-              SizedBox(width: 15),
-              Icon(Icons.psychology_outlined, color: Colors.white, size: 35)
-            ])));
+      onTap: () {
+        final profileCubit = BlocProvider.of<ProfileCubit>(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider.value(
+              value: profileCubit,
+              child: const ChatHomeScreen(),
+            ),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF3A8DFF), Color(0xFF1E61BD)],
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 16),
+            Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  "رفيق الشات الذكي",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'IBMPlexSansArabic',
+                  ),
+                ),
+                Text(
+                  "اسأل عن شئ",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 11,
+                    fontFamily: 'IBMPlexSansArabic',
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 15),
+            Icon(Icons.psychology_outlined, color: Colors.white, size: 35),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -385,8 +466,9 @@ class _EventsSection extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 16),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-            color: const Color(0xFFF1F6FF),
-            borderRadius: BorderRadius.circular(25)),
+          color: const Color(0xFFF1F6FF),
+          borderRadius: BorderRadius.circular(25),
+        ),
         child: Column(
           children: [
             Row(
@@ -433,7 +515,8 @@ class _EventsSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       ElevatedButton(
-                        onPressed: () => context.read<ReminderCubit>().loadReminders(),
+                        onPressed: () =>
+                            context.read<ReminderCubit>().loadReminders(),
                         child: const Text('إعادة المحاولة'),
                       ),
                     ],
@@ -459,13 +542,17 @@ class _EventsSection extends StatelessWidget {
 
                   if (isCompleted) {
                     completedCount++;
-                    log('[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because isCompleted is true.');
+                    log(
+                      '[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because isCompleted is true.',
+                    );
                     continue;
                   }
 
                   if (status.toString().toLowerCase() == 'completed') {
                     completedCount++;
-                    log('[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because status is Completed.');
+                    log(
+                      '[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because status is Completed.',
+                    );
                     continue;
                   }
 
@@ -473,14 +560,18 @@ class _EventsSection extends StatelessWidget {
                     final dueDate = DateTime.parse(r['dueDate']);
                     if (dueDate.isBefore(now)) {
                       expiredCount++;
-                      log('[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because dueDate is in the past (Due: ${r['dueDate']}).');
+                      log(
+                        '[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because dueDate is in the past (Due: ${r['dueDate']}).',
+                      );
                       continue;
                     }
 
                     upcomingCount++;
                     upcoming.add(r);
                   } catch (e) {
-                    log('[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because parsing dueDate failed: $e');
+                    log(
+                      '[Upcoming Appointments Filter] Filtered out reminder "$title" (ID: $id) because parsing dueDate failed: $e',
+                    );
                   }
                 }
 
@@ -491,14 +582,18 @@ class _EventsSection extends StatelessWidget {
                   return dateA.compareTo(dateB);
                 });
 
-                log('========== [Upcoming Appointments Filter Stats] ==========');
+                log(
+                  '========== [Upcoming Appointments Filter Stats] ==========',
+                );
                 log('API Endpoint: /v1/api/reminders/getall/pagginated');
                 log('Total reminders: ${reminders.length}');
                 log('Completed reminders: $completedCount');
                 log('Expired/Past reminders: $expiredCount');
                 log('Upcoming reminders: $upcomingCount');
                 log('Rendered reminders: ${upcoming.length}');
-                log('===========================================================');
+                log(
+                  '===========================================================',
+                );
 
                 if (upcoming.isEmpty) {
                   return const Center(
@@ -526,8 +621,10 @@ class _EventsSection extends StatelessWidget {
                     String formattedTime = '';
                     try {
                       final date = DateTime.parse(item['dueDate']);
-                      formattedTime = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
-                      if (item['description'] != null && item['description'].toString().isNotEmpty) {
+                      formattedTime =
+                          "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+                      if (item['description'] != null &&
+                          item['description'].toString().isNotEmpty) {
                         formattedTime += " – ${item['description']}";
                       }
                     } catch (_) {}
@@ -549,51 +646,73 @@ class _FloatingBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-        bottom: 25,
-        left: 40,
-        right: 40,
-        child: Container(
-            height: 70,
-            decoration: BoxDecoration(
-                color: const Color(0xFF1E61BD),
-                borderRadius: BorderRadius.circular(35),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withValues(alpha:0.2),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8))
-                ]),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.person_outline, color: Colors.white54, size: 28),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                      );
-                    },
+      bottom: 25,
+      left: 40,
+      right: 40,
+      child: Container(
+        height: 70,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E61BD),
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.person_outline,
+                color: Colors.white54,
+                size: 28,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfileScreen(),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.smart_toy_outlined, color: Colors.white54, size: 28),
-                    onPressed: () {
-                      final profileCubit = BlocProvider.of<ProfileCubit>(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BlocProvider.value(
-                            value: profileCubit,
-                            child: const ChatHomeScreen())),
-                      );
-                    },
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.smart_toy_outlined,
+                color: Colors.white54,
+                size: 28,
+              ),
+              onPressed: () {
+                final profileCubit = BlocProvider.of<ProfileCubit>(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: profileCubit,
+                      child: const ChatHomeScreen(),
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.home_rounded, color: Colors.white, size: 28),
-                    onPressed: () {
-                      // Already on HomeScreen
-                    },
-                  )
-                ])));
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(
+                Icons.home_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
+              onPressed: () {
+                // Already on HomeScreen
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -602,12 +721,27 @@ class _StatItem extends StatelessWidget {
   const _StatItem(this.value, this.label);
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Text(value,
+    return Column(
+      children: [
+        Text(
+          value,
           style: const TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'IBMPlexSansArabic')),
-      Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12, fontFamily: 'IBMPlexSansArabic'))
-    ]);
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'IBMPlexSansArabic',
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12,
+            fontFamily: 'IBMPlexSansArabic',
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -623,30 +757,54 @@ class _ServiceCard extends StatelessWidget {
   final IconData icon;
   final String title, sub;
   final VoidCallback onTap;
-  const _ServiceCard({required this.icon, required this.title, required this.sub, required this.onTap});
+  const _ServiceCard({
+    required this.icon,
+    required this.title,
+    required this.sub,
+    required this.onTap,
+  });
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(22),
       child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-              color: const Color(0xFFF1F6FF),
-              borderRadius: BorderRadius.circular(22)),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F6FF),
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
             Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: const Color(0xFF1E61BD),
-                    borderRadius: BorderRadius.circular(12)),
-                child: Icon(icon, color: Colors.white, size: 20)),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E61BD),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: Colors.white, size: 20),
+            ),
             const Spacer(),
-            Text(title,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, fontFamily: 'IBMPlexSansArabic')),
-            Text(sub, style: const TextStyle(color: Colors.grey, fontSize: 10, fontFamily: 'IBMPlexSansArabic'))
-          ])),
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                fontFamily: 'IBMPlexSansArabic',
+              ),
+            ),
+            Text(
+              sub,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 10,
+                fontFamily: 'IBMPlexSansArabic',
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -657,64 +815,142 @@ class _EventItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            Text(title,
-                style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 14, fontFamily: 'IBMPlexSansArabic')),
-            Text(time, style: const TextStyle(color: Colors.grey, fontSize: 11, fontFamily: 'IBMPlexSansArabic'))
-          ]),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  fontFamily: 'IBMPlexSansArabic',
+                ),
+              ),
+              Text(
+                time,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 11,
+                  fontFamily: 'IBMPlexSansArabic',
+                ),
+              ),
+            ],
+          ),
           const SizedBox(width: 12),
           Container(
-              width: 3,
-              height: 35,
-              decoration: BoxDecoration(
-                  color: const Color(0xFF1E61BD),
-                  borderRadius: BorderRadius.circular(10)))
-        ]));
+            width: 3,
+            height: 35,
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E61BD),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
 class _MapSection extends StatelessWidget {
   const _MapSection();
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CollegeBuildingMapScreen()),
-          );
-        },
-        child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            height: 100,
-            decoration: BoxDecoration(
-                color: const Color(0xFFF1F6FF),
-                borderRadius: BorderRadius.circular(25)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Column(
+      borderRadius: BorderRadius.circular(22),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const CollegeBuildingMapScreen()),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 165,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xff2E6FC3), Color(0xff73ACEF)],
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.map_outlined,
+                    color: Colors.white,
+                    size: 72,
+                  ),
+                ),
+              ),
+
+              Container(
+                height: 82,
+                width: double.infinity,
+                color: const Color(0xffEEF4FC),
+                padding: const EdgeInsets.symmetric(horizontal: 22),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Color(0xff98A3B3),
+                      size: 18,
+                    ),
+
+                    const Spacer(),
+
+                    const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text("خريطة الكلية",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16, fontFamily: 'IBMPlexSansArabic')),
-                        Text("استكشف مباني الكلية",
-                            style: TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'IBMPlexSansArabic'))
-                      ]),
-                  const SizedBox(width: 20),
-                  SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image.asset(
-                      'assets/images/cis_map.jpg',
-                      fit: BoxFit.contain,
+                        Text(
+                          "خريطة الكلية",
+                          style: TextStyle(
+                            fontFamily: "IBMPlexSansArabic",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff1E1E1E),
+                          ),
+                        ),
+                        SizedBox(height: 3),
+                        Text(
+                          "اعتبر على المباني وتنقل بينها",
+                          style: TextStyle(
+                            fontFamily: "IBMPlexSansArabic",
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff9AA3AF),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ])));
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

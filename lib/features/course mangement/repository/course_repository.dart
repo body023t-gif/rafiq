@@ -37,9 +37,9 @@ class CourseRepository {
     }
   }
 
-  Future<void> enrollCourse(String courseId, String sectionId) async {
+  Future<void> enrollCourse(String courseId, String lectureGroupId, String sectionId) async {
     try {
-      await remoteDataSource.enrollCourse(courseId, sectionId);
+      await remoteDataSource.enrollCourse(courseId, lectureGroupId, sectionId);
     } on ApiException {
       rethrow;
     } catch (_) {

@@ -6,9 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rafiq/core/network/api_client.dart';
 import 'package:rafiq/core/ui/appbar.dart';
 import 'package:rafiq/core/utils/text_encoding.dart';
-import 'package:rafiq/features/course%20mangement/data/datasource/course_remote_datasource.dart';
 import 'package:rafiq/features/course%20mangement/data/datasource/schedule_remote_datasource.dart';
+import 'package:rafiq/features/course%20mangement/presentation/widgets/weekly_timetable_grid.dart';
 import 'package:rafiq/features/course%20mangement/data/datasource/timetable_remote_datasource.dart';
+import 'package:rafiq/features/course%20mangement/data/datasource/course_remote_datasource.dart';
 import 'package:rafiq/features/course%20mangement/models/schedule_model.dart';
 import 'package:rafiq/features/course%20mangement/presentation/cubit/course_cubit.dart';
 import 'package:rafiq/features/course%20mangement/presentation/cubit/course_state.dart';
@@ -20,6 +21,7 @@ import 'package:rafiq/features/course%20mangement/presentation/widgets/regenerat
 import 'package:rafiq/features/course%20mangement/repository/course_repository.dart';
 import 'package:rafiq/features/course%20mangement/repository/schedule_repository.dart';
 import 'package:rafiq/features/course%20mangement/repository/timetable_repository.dart';
+import 'package:rafiq/features/course%20mangement/models/saved_timetable_model.dart';
 
 class Schedule extends StatefulWidget {
   final String? initialCourseId;
@@ -206,6 +208,89 @@ class _ScheduleState extends State<Schedule> {
     );
   }
 
+  void _showSavedTimetablesSheet(List<SavedTimetableModel> timetables) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (sheetContext) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          constraints: BoxConstraints(maxHeight: 500.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "الجداول المحفوظة",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: timetables.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                  itemBuilder: (context, index) {
+                    final t = timetables[index];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        // Select the saved timetable
+                        _timetableCubit.selectSavedTimetable(t);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F5F9),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              t.timetableName.isNotEmpty ? t.timetableName : "جدول #${index + 1}",
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8.h),
+                            Row(
+                              children: [
+                                Icon(Icons.calendar_today, size: 14.sp, color: Colors.grey.shade600),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  "${t.totalDays} أيام",
+                                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12.sp),
+                                ),
+                                SizedBox(width: 16.w),
+                                Icon(Icons.settings_suggest, size: 14.sp, color: Colors.grey.shade600),
+                                SizedBox(width: 4.w),
+                                Text(
+                                  t.optionName,
+                                  style: TextStyle(color: Colors.grey.shade700, fontSize: 12.sp),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -233,6 +318,8 @@ class _ScheduleState extends State<Schedule> {
                 _scheduleCubit.loadSchedule(silent: true);
               } else if (state is TimetableError) {
                 _showSnackBar(context, state.message);
+              } else if (state is SavedTimetableListLoaded) {
+                _showSavedTimetablesSheet(state.timetables);
               }
             },
           ),
@@ -365,7 +452,7 @@ class _ScheduleState extends State<Schedule> {
                                           ]
                                         : null,
                                   ),
-                                  alignment: Alignment.center,
+                                  alignment: AlignmentDirectional.centerStart,
                                   child: Text(
                                     day,
                                     style: TextStyle(
@@ -496,11 +583,37 @@ class _ScheduleState extends State<Schedule> {
                           ),
                         ),
 
+                        SizedBox(height: 12.h),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20.w),
+                          width: double.infinity,
+                          height: 44.h,
+                          child: OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF1E6FD9),
+                              side: const BorderSide(color: Color(0xFF1E6FD9)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            onPressed: isTimetableActionBusy ? null : () => _timetableCubit.loadSavedTimetables(),
+                            icon: Icon(Icons.bookmark_border, size: 16.sp),
+                            label: Text(
+                              "الجداول المحفوظة",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+
+
                         if (hasGeneratedTimetable(timetableState))
                           Padding(
-                            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                            padding: EdgeInsetsDirectional.fromSTEB(20.w, 10.h, 20.w, 0),
                             child: Align(
-                              alignment: Alignment.centerRight,
+                              alignment: AlignmentDirectional.centerEnd,
                               child: Text(
                                 'جدول مُولَّد — يمكنك حفظه أو إعادة التوليد',
                                 style: TextStyle(
@@ -517,10 +630,12 @@ class _ScheduleState extends State<Schedule> {
                         if (showProgressBar) const LinearProgressIndicator(),
 
                         Expanded(
-                          child: dayEntries.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    "لا توجد محاضرات في هذا اليوم",
+                          child: hasGeneratedTimetable(timetableState)
+                              ? WeeklyTimetableGrid(entries: entries)
+                              : dayEntries.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                        "لا توجد محاضرات في هذا اليوم",
                                     style: TextStyle(color: Colors.grey.shade400, fontSize: 14.sp),
                                   ),
                                 )

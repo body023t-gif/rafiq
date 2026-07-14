@@ -6,6 +6,7 @@ import 'package:rafiq/features/course%20mangement/models/schedule_model.dart';
 import 'package:rafiq/features/course%20mangement/models/timetable_model.dart';
 import 'package:rafiq/features/course%20mangement/presentation/cubit/timetable_state.dart';
 import 'package:rafiq/features/course%20mangement/repository/timetable_repository.dart';
+import 'package:rafiq/features/course%20mangement/models/saved_timetable_model.dart';
 
 class TimetableCubit extends Cubit<TimetableState> {
   void log(String message) {
@@ -42,6 +43,13 @@ class TimetableCubit extends Cubit<TimetableState> {
       );
       _current = timetable;
       emit(TimetableGenerated(timetable));
+      
+      try {
+        await save();
+      } catch (_) {
+        // Save errors are handled within the save() method which emits TimetableError
+        // but keeps previousTimetable so it won't be lost.
+      }
     } on ApiException catch (e) {
       emit(TimetableError(repairUtf8Text(e.message), previousTimetable: _current));
     } catch (_) {
@@ -96,5 +104,28 @@ class TimetableCubit extends Cubit<TimetableState> {
     } catch (_) {
       emit(TimetableError('Failed to save timetable.', previousTimetable: current));
     }
+  }
+
+  Future<void> loadSavedTimetables() async {
+    emit(const SavedTimetablesLoading());
+    try {
+      final studentId = ApiService.dynamicStudentId ?? ApiService.dynamicUserId ?? ApiService.staticUserId;
+      final timetables = await repository.getSavedTimetables(studentId);
+      if (timetables.isEmpty) {
+        emit(const TimetableError('لا توجد جداول محفوظة'));
+      } else if (timetables.length == 1) {
+        emit(SavedTimetableLoaded(timetables.first));
+      } else {
+        emit(SavedTimetableListLoaded(timetables));
+      }
+    } on ApiException catch (e) {
+      emit(TimetableError(repairUtf8Text(e.message), previousTimetable: _current));
+    } catch (_) {
+      emit(TimetableError('Failed to load saved timetables.', previousTimetable: _current));
+    }
+  }
+
+  void selectSavedTimetable(SavedTimetableModel timetable) {
+    emit(SavedTimetableLoaded(timetable));
   }
 }

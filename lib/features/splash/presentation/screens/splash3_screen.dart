@@ -110,10 +110,9 @@ class Splash3 extends StatelessWidget {
                   color: const Color(0xFF1564BF),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.white,
-                  size: 20,
+                child: const IconTheme(
+                  data: IconThemeData(color: Colors.white, size: 20),
+                  child: BackButtonIcon(),
                 ),
               ),
             ),

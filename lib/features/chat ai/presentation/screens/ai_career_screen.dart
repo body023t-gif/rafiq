@@ -69,9 +69,9 @@ class _CareerScreenState extends State<CareerScreen> {
         automaticallyImplyLeading: false,
         titleSpacing: 0,
         title: const Padding(
-          padding: EdgeInsets.only(right: 20),
+          padding: EdgeInsetsDirectional.only(end: 20),
           child: Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Text(
               "اقتراحات مسار المهنة",
               style: TextStyle(
@@ -95,10 +95,9 @@ class _CareerScreenState extends State<CareerScreen> {
             ),
             child: IconButton(
               padding: EdgeInsets.zero,
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                size: 16,
-                color: Colors.white,
+              icon: const IconTheme(
+                data: IconThemeData(color: Colors.white, size: 16),
+                child: BackButtonIcon(),
               ),
               onPressed: () => Navigator.pop(context),
             ),
